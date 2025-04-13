@@ -72,3 +72,17 @@ class CreatePuzzleView(View):
                 'form': form,
                 'question_formset': question_formset,
             })
+
+class ViewPuzzleView(View):
+    def get(self, request, puzzle_id):
+        try:
+            puzzle = Puzzle.objects.get(id=puzzle_id)
+            questions = PuzzleQuestions.objects.filter(puzzle=puzzle)
+
+            return render(request, 'view_puzzle.html', {
+                'puzzle': puzzle,
+                'questions': questions,
+            })
+        except Puzzle.DoesNotExist:
+            messages.error(request, "Puzzle not found.")
+            return redirect('home')

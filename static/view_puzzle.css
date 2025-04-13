@@ -1,0 +1,25 @@
+.view-puzzle-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.view-puzzle-container h2 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: #343a40;
+}
+
+.questions-section h3 {
+    margin-bottom: 1rem;
+    color: #495057;
+}
+
+.list-group-item {
+    background-color: #fff;
+    border-color: #dee2e6;
+    padding: 0.75rem 1.25rem;
+}
