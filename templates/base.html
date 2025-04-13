@@ -28,11 +28,11 @@
             <img src="{% static 'logo.png' %}" alt="logo">
         </div>
         <ul class="nav-links">
-            <li><a href="{% url 'home' %}">Home</a></li>
-            <li><a href="{% url 'puzzle:create_puzzle' %}">Create</a></li>
+            <li><a href="{% url 'home' %}" class="nav-link">Home</a></li>
+            <li><a href="{% url 'puzzle:create_puzzle' %}" class="nav-link">Create</a></li>
             {% if user.is_authenticated %}
-                <li><a href="#">My Puzzles</a></li>
-                <li><a href="#">Profile</a></li>
+                <li><a href="#" class="nav-link">My Puzzles</a></li>
+                <li><a href="#" class="nav-link">Profile</a></li>
             {% endif %}
             {% if user.is_authenticated %}
                 <li>
@@ -42,7 +42,7 @@
                     </form>
                 </li>
             {% else %}
-                <li><a href="{% url 'users:login' %}">Login</a></li>
+                <li><a href="{% url 'users:login' %}" class="nav-link">Login</a></li>
             {% endif %}
         </ul>
     </nav>
