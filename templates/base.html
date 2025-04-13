@@ -31,6 +31,16 @@
             <li><a href="#">Home</a></li>
             <li><a href="#">Create</a></li>
             <li><a href="#">Profile</a></li>
+            {% if user.is_authenticated %}
+                <li>
+                    <form action="{% url 'users:logout' %}" method="post" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="nav-link">Logout</button>
+                    </form>
+                </li>
+            {% else %}
+                <li><a href="{% url 'users:login' %}">Login</a></li>
+            {% endif %}
         </ul>
     </nav>
 
