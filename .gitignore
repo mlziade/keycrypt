@@ -9,5 +9,5 @@ wheels/
 # Virtual environments
 .venv
 
-# Database file
-db.sqlite3
+# Django database file
+*.sqlite3

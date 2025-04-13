@@ -1,0 +1,18 @@
+from django.contrib import admin
+from .models import Puzzle, PuzzleQuestions
+
+@admin.register(Puzzle)
+class PuzzleAdmin(admin.ModelAdmin):
+    list_display = ('id', 'created_by', 'one_time_view', 'is_solved', 'self_destruct_at', 'created_at', 'updated_at')
+    list_display_links = ('id', 'created_by')
+    list_filter = ('one_time_view', 'is_solved', 'created_by', 'created_at', 'self_destruct_at')
+    search_fields = ('id', 'created_by__username', 'encrypted_message')
+    readonly_fields = ('created_at', 'updated_at')
+
+@admin.register(PuzzleQuestions)
+class PuzzleQuestionsAdmin(admin.ModelAdmin):
+    list_display = ('id', 'puzzle', 'question', 'created_at')
+    list_display_links = ('id', 'puzzle', 'question')
+    list_filter = ('puzzle', 'created_at')
+    search_fields = ('id', 'puzzle__id', 'question', 'answer')
+    readonly_fields = ('created_at',)

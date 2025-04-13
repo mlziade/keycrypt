@@ -26,4 +26,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', HomeView.as_view(), name='home'),
     path('users/', include('users.urls', namespace='users')),
+    path('puzzle/', include('puzzle.urls', namespace='puzzle')),
 ]

@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Create Puzzle
+{% endblock %}
+
+{% block extra_css %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'create_puzzle.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+{% endblock %}
+
+{% block content %}
+    <div class="create-puzzle-container">
+        <h2>Create a New Puzzle</h2>
+
+        {% load django_bootstrap5 %}
+        {% bootstrap_messages %}
+
+        <form method="post" class="puzzle-form">
+            {% csrf_token %}
+            {% load django_bootstrap5 %}
+
+            {% bootstrap_form form %}
+
+            <hr>
+            <h3>Questions (Optional)</h3>
+            <div id="question-forms-container">
+                {{ question_formset.management_form }}
+
+                {% for form in question_formset %}
+                    <div class="question-form mb-3 p-3 border rounded">
+                        {% bootstrap_form form layout='horizontal' %}
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div id="empty-form-template" style="display: none;">
+                 <div class="question-form mb-3 p-3 border rounded">
+                    {% bootstrap_form question_formset.empty_form layout='horizontal' %}
+                 </div>
+            </div>
+
+            <div class="question-button-group mb-3">
+                <button type="button" id="add-question-form-btn" class="btn btn-success btn-sm">
+                    <i class="bi bi-plus-circle"></i> Add Question
+                </button>
+                <button type="button" id="remove-question-form-btn" class="btn btn-danger btn-sm">
+                    <i class="bi bi-dash-circle"></i> Remove Last Question
+                </button>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Create Puzzle</button>
+        </form>
+    </div>
+
+    {% block extra_js %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const addFormButton = document.getElementById('add-question-form-btn');
+            const removeFormButton = document.getElementById('remove-question-form-btn');
+            const formsContainer = document.getElementById('question-forms-container');
+            const emptyFormTemplate = document.getElementById('empty-form-template').innerHTML;
+            const totalFormsInput = document.getElementById('id_{{ question_formset.prefix }}-TOTAL_FORMS');
+            const initialFormsInput = document.getElementById('id_{{ question_formset.prefix }}-INITIAL_FORMS');
+            const formsetPrefix = '{{ question_formset.prefix }}';
+            const minForms = 0;
+
+            addFormButton.addEventListener('click', function() {
+                let currentFormCount = parseInt(totalFormsInput.value, 10);
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = emptyFormTemplate.replace(/__prefix__/g, currentFormCount);
+                formsContainer.appendChild(tempDiv.firstElementChild);
+                totalFormsInput.value = currentFormCount + 1;
+            });
+
+            removeFormButton.addEventListener('click', function() {
+                let currentFormCount = parseInt(totalFormsInput.value, 10);
+                if (currentFormCount > minForms) {
+                    const allForms = formsContainer.querySelectorAll('.question-form');
+                    if (allForms.length > 0) {
+                        allForms[allForms.length - 1].remove();
+                        totalFormsInput.value = currentFormCount - 1;
+                    }
+                } else {
+                    alert("Cannot remove any more questions.");
+                }
+            });
+        });
+    </script>
+    {% endblock %}
+{% endblock %}
