@@ -28,7 +28,7 @@
             <img src="{% static 'logo.png' %}" alt="logo">
         </div>
         <ul class="nav-links">
-            <li><a href="#">Home</a></li>
+            <li><a href="{% url 'home' %}">Home</a></li>
             <li><a href="{% url 'puzzle:create_puzzle' %}">Create</a></li>
             <li><a href="#">Profile</a></li>
             {% if user.is_authenticated %}
