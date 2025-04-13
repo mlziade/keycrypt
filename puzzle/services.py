@@ -24,3 +24,22 @@ def encrypt_message(words: list[str], message:str) -> dict:
         "nonce": base64.b64encode(nonce).decode(),
         "salt": base64.b64encode(salt).decode()
     }
+
+def decrypt_message(password: list[str], ciphertext: str, nonce: str, salt: str) -> str:
+    # Join words to form the "password"
+    password = " ".join(password).encode()
+
+    # Decode the base64 encoded values
+    ciphertext = base64.b64decode(ciphertext)
+    nonce = base64.b64decode(nonce)
+    salt = base64.b64decode(salt)
+
+    # Derive the key using the same parameters
+    kdf = Scrypt(salt=salt, length=32, n=2**14, r=8, p=1)
+    key = kdf.derive(password.encode())
+
+    # Decrypt using AES-GCM
+    aesgcm = AESGCM(key)
+    plaintext = aesgcm.decrypt(nonce, ciphertext, None)
+
+    return plaintext.decode()
