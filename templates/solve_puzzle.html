@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Solve Puzzle #{{ puzzle.id }}
+{% endblock %}
+
+{% block extra_css %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'solve_puzzle.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+{% endblock %}
+
+{% block content %}
+    <div class="solve-puzzle-container">
+        <h2>Solve Puzzle #{{ puzzle.id }}</h2>
+
+        {% load django_bootstrap5 %}
+        {% bootstrap_messages %}
+
+        <div class="encrypted-message-container text-center mt-4 mb-4">
+            <p class="encrypted-message">{{ puzzle.encrypted_message }}</p>
+        </div>
+
+        {% if questions %}
+            <div class="questions-section mt-4">
+                <h3>Questions</h3>
+                <form method="post" action="{% url 'puzzle:solve_puzzle' puzzle.id %}">
+                    {% csrf_token %}
+                    <ol class="list-group list-group-numbered">
+                        {% for question in questions %}
+                            <li class="list-group-item">
+                                <div class="question-answer-pair">
+                                    <div class="question-text">{{ question.question }}</div>
+                                    <div class="answer-input d-flex">
+                                        <input type="text" name="answers" 
+                                               class="form-control me-2" 
+                                               placeholder="Your answer" 
+                                               id="answer-{{ question.id }}"
+                                               required>
+                                        <button type="button" 
+                                                class="btn btn-outline-secondary test-answer-btn" 
+                                                data-puzzle-id="{{ puzzle.id }}" 
+                                                data-question-id="{{ question.id }}">
+                                            <i class="bi bi-check-circle"></i> Test
+                                        </button>
+                                    </div>
+                                    <div class="feedback-message mt-2" id="feedback-{{ question.id }}"></div>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ol>
+                    <div class="mt-4 text-center">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-key-fill me-2"></i>Submit Answers
+                        </button>
+                    </div>
+                </form>
+            </div>
+        {% else %}
+            <div class="alert alert-info mt-4" role="alert">
+                This puzzle does not have any associated questions.
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'solve_puzzle.js' %}"></script>
+{% endblock %}
