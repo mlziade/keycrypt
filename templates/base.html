@@ -31,7 +31,7 @@
             <li><a href="{% url 'home' %}" class="nav-link">Home</a></li>
             <li><a href="{% url 'puzzle:create_puzzle' %}" class="nav-link">Create</a></li>
             {% if user.is_authenticated %}
-                <li><a href="#" class="nav-link">My Puzzles</a></li>
+                <li><a href="{% url 'puzzle:my_puzzles' %}" class="nav-link">My Puzzles</a></li>
                 <li><a href="#" class="nav-link">Profile</a></li>
             {% endif %}
             {% if user.is_authenticated %}

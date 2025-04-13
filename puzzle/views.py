@@ -112,10 +112,10 @@ class SolvePuzzleView(View):
             solutions = [question.solution for question in questions]
 
             if sorted(answers) == sorted(solutions):
-                messages.success(request, "Congratulations! You've solved the puzzle.")
+                # messages.success(request, "Congratulations! You've solved the puzzle.")
                 return redirect('home')
             else:
-                messages.error(request, "Incorrect answers. Please try again.")
+                # messages.error(request, "Incorrect answers. Please try again.")
                 return render(request, 'solve_puzzle.html', {
                     'puzzle': puzzle,
                     'questions': questions,
@@ -123,6 +123,14 @@ class SolvePuzzleView(View):
         except Puzzle.DoesNotExist:
             messages.error(request, "Puzzle not found.")
             return redirect('home')
+
+class MyPuzzlesView(View):
+    @method_decorator(login_required)
+    def get(self, request):
+        puzzles = Puzzle.objects.filter(created_by=request.user)
+        return render(request, 'user_puzzles.html', {
+            'puzzles': puzzles,
+        })
 
 def solve_question(request, puzzle_id, question_id):
     try:

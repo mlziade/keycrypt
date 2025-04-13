@@ -1,0 +1,63 @@
+.puzzles-container {
+    max-width: 1000px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.puzzles-container h2 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: #343a40;
+}
+
+.puzzle-table {
+    background-color: #fff;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.puzzle-table thead {
+    background-color: #e9ecef;
+}
+
+.puzzle-table th {
+    font-weight: 600;
+    color: #495057;
+    border-bottom-width: 2px;
+}
+
+.puzzle-table td, .puzzle-table th {
+    vertical-align: middle;
+    padding: 0.75rem 1rem;
+}
+
+.badge {
+    font-weight: 500;
+    padding: 0.4em 0.6em;
+}
+
+/* Make sure table is responsive on small screens */
+@media (max-width: 768px) {
+    .puzzles-container {
+        padding: 1rem;
+    }
+    
+    .puzzle-table {
+        font-size: 0.875rem;
+    }
+}
+
+/* Keep some of the existing styles for consistency */
+.questions-section h3 {
+    margin-bottom: 1rem;
+    color: #495057;
+}
+
+.list-group-item {
+    background-color: #fff;
+    border-color: #dee2e6;
+    padding: 0.75rem 1.25rem;
+}
