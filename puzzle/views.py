@@ -7,7 +7,7 @@ from django.utils.decorators import method_decorator
 from django.http import JsonResponse
 
 from .forms import CreatePuzzleForm, QuestionFormSet
-from .models import Puzzle, PuzzleQuestion, PuzzleSolved
+from .models import Puzzle, PuzzleQuestion, PuzzleSolved, PuzzleReport
 from .services import encrypt_message
 
 from users.models import Profile
@@ -175,4 +175,27 @@ def test_question(request, puzzle_id, question_id):
         
     except (Puzzle.DoesNotExist, PuzzleQuestion.DoesNotExist):
         messages.error(request, "Puzzle or question not found.")
+        return redirect('home')
+
+def report_puzzle(request, puzzle_id):
+    if request.method == 'POST':
+        try:
+            puzzle: Puzzle = Puzzle.objects.get(id=puzzle_id)
+            report_reason = request.POST.get('report_reason', '').strip()
+
+            # Create a report for the puzzle
+            puzzle_report = PuzzleReport(
+                puzzle=puzzle,
+                reported_by=request.user if request.user.is_authenticated else None,
+                report_reason=report_reason
+            )
+            puzzle_report.save()
+
+            messages.success(request, "Puzzle reported successfully.")
+            return redirect('home')
+        except Puzzle.DoesNotExist:
+            messages.error(request, "Puzzle not found.")
+            return redirect('home')
+    else:
+        messages.error(request, "Invalid request method.")
         return redirect('home')

@@ -39,3 +39,13 @@ class PuzzleSolved(models.Model):
 
     def __str__(self):
         return str(self.id)
+
+class PuzzleReport(models.Model):
+    id = models.AutoField(primary_key=True, auto_created=True)
+    puzzle = models.ForeignKey(Puzzle, null=True, on_delete=models.SET_NULL, related_name='reports')
+    reported_by = models.ForeignKey(Profile, null=True, on_delete=models.SET_NULL, related_name='reported_puzzles')
+    report_reason = models.TextField(null=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return str(self.id)

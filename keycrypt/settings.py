@@ -33,6 +33,7 @@ ALLOWED_HOSTS = [
     'www.keycrypt.mlziade.com.br',
     'keycrypt.mlziade.com.br',
     '188.245.32.185',
+    '127.0.0.1'
 ]
 
 # Application definition

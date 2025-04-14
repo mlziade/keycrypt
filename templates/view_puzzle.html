@@ -33,9 +33,21 @@
                 This puzzle does not have any associated questions. You might need a key directly.
             </div>
         {% endif %}
+        
+        <div class="action-buttons mt-4">
+            <button id="reportButton" class="btn-report">
+                <i class="bi bi-flag-fill"></i> Report Puzzle
+            </button>
+        </div>
+        
+        <!-- Hidden form for reporting -->
+        <form id="reportForm" method="post" action="{% url 'puzzle:report_puzzle' puzzle.id %}" style="display: none;">
+            {% csrf_token %}
+            <input type="hidden" name="report_reason" value="Default">
+        </form>
     </div>
 {% endblock %}
 
 {% block extra_js %}
-    {# Add any specific JS for this page if needed later #}
+    <script src="{% static 'view_puzzle.js' %}"></script>
 {% endblock %}
