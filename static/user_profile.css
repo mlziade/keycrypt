@@ -2,41 +2,68 @@
     max-width: 1000px;
     margin: 2rem auto;
     padding: 2rem;
-    background-color: #f8f9fa;
+    background-color: var(--container-bg);
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 8px var(--shadow-color);
+    border: 1px solid #333;
 }
 
 .puzzles-container h2 {
     text-align: center;
     margin-bottom: 1.5rem;
-    color: #343a40;
+    color: var(--text-color);
 }
 
 .puzzle-table {
-    background-color: #fff;
+    background-color: #242424;
     border-radius: 6px;
     overflow: hidden;
+    color: var(--text-color);
+    border-color: #333;
 }
 
 .puzzle-table thead {
-    background-color: #e9ecef;
+    background-color: #1c1c1c;
 }
 
 .puzzle-table th {
     font-weight: 600;
-    color: #495057;
+    color: var(--text-color);
     border-bottom-width: 2px;
+    border-color: #333;
 }
 
 .puzzle-table td, .puzzle-table th {
     vertical-align: middle;
     padding: 0.75rem 1rem;
+    border-color: #333;
 }
 
 .badge {
     font-weight: 500;
     padding: 0.4em 0.6em;
+}
+
+/* Bootstrap tabs styling for dark theme */
+.nav-tabs {
+    border-bottom-color: #333;
+}
+
+.nav-tabs .nav-link {
+    color: var(--text-color);
+    background-color: #242424;
+    border-color: transparent;
+}
+
+.nav-tabs .nav-link:hover {
+    border-color: #444;
+    color: var(--accent-color);
+}
+
+.nav-tabs .nav-link.active {
+    color: var(--accent-color);
+    background-color: var(--container-bg);
+    border-color: #444 #444 var(--container-bg);
 }
 
 /* Make sure table is responsive on small screens */
@@ -53,22 +80,39 @@
 /* Keep some of the existing styles for consistency */
 .questions-section h3 {
     margin-bottom: 1rem;
-    color: #495057;
+    color: var(--text-color);
 }
 
 .list-group-item {
-    background-color: #fff;
-    border-color: #dee2e6;
-    padding: 0.75rem 1.25rem;
+    background-color: #242424;
+    border-color: #333;
+    color: var(--text-color);
+}
+
+.alert-info {
+    background-color: rgba(74, 158, 255, 0.1);
+    border-color: rgba(74, 158, 255, 0.25);
+    color: #9eccff;
+}
+
+.alert-info .alert-link {
+    color: var(--accent-color);
+    text-decoration: none;
+}
+
+.alert-info .alert-link:hover {
+    text-decoration: underline;
 }
 
 .profile-container {
     max-width: 1000px;
     margin: 2rem auto 0;
     padding: 2rem;
-    background-color: #f8f9fa;
+    background-color: var(--container-bg);
     border-radius: 8px 8px 0 0;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 8px var(--shadow-color);
+    border: 1px solid #333;
+    border-bottom: none;
 }
 
 .profile-header {
@@ -85,17 +129,17 @@
     width: 150px;
     height: 150px;
     border-radius: 50%;
-    background-color: #e9ecef;
+    background-color: #242424;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    border: 3px solid #dee2e6;
+    box-shadow: 0 2px 8px var(--shadow-color);
+    border: 3px solid #333;
 }
 
 .profile-picture-placeholder i {
     font-size: 80px;
-    color: #adb5bd;
+    color: #666;
 }
 
 .profile-info {
@@ -104,20 +148,29 @@
 
 .profile-info h2 {
     margin-bottom: 0.5rem;
-    color: #343a40;
+    color: var(--text-color);
     text-align: left;
 }
 
 .profile-info p {
     margin-bottom: 0.5rem;
-    color: #495057;
+    color: var(--light-color);
     display: flex;
     align-items: center;
     gap: 0.5rem;
 }
 
 .profile-info p i {
-    color: #6c757d;
+    color: var(--accent-color);
+}
+
+.profile-info a {
+    color: var(--accent-color);
+    text-decoration: none;
+}
+
+.profile-info a:hover {
+    text-decoration: underline;
 }
 
 /* Adjust puzzles container to connect with profile */
@@ -125,9 +178,16 @@
     max-width: 1000px;
     margin: 0 auto 2rem;
     padding: 2rem;
-    background-color: #f8f9fa;
+    background-color: var(--container-bg);
     border-radius: 0 0 8px 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 8px var(--shadow-color);
+    border: 1px solid #333;
+    border-top: none;
+}
+
+/* Text colors override for bootstrap dark theme */
+.text-muted {
+    color: #9e9e9e !important;
 }
 
 /* Media query for responsive design */
