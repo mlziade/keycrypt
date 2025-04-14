@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}
+    KeyCrypt - Register
+{% endblock %}
+
+{% block extra_css %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'register.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="login-container">
+    <div class="login-card">
+        <h2>Create Account</h2>
+        <p class="subtitle">Join KeyCrypt today</p>
+        
+        <form method="post" class="login-form">
+            {% csrf_token %}
+            
+            {% if form.errors %}
+            <div class="form-errors">
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <p class="error-message">{{ error }}</p>
+                    {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                    <p class="error-message">{{ error }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+            
+            <div class="form-group">
+                <label for="{{ form.username.id_for_label }}">Username</label>
+                {{ form.username }}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.email.id_for_label }}">Email</label>
+                {{ form.email }}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.password.id_for_label }}">Password</label>
+                {{ form.password }}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.password2.id_for_label }}">Confirm Password</label>
+                {{ form.password2 }}
+            </div>
+            
+            <button type="submit" class="login-button">Create Account</button>
+        </form>
+        
+        <div class="login-footer">
+            <p>Already have an account? <a href="{% url 'users:login' %}">Sign In</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}
