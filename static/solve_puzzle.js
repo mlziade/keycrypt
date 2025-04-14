@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function () {
             this.disabled = true;
             this.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Testing...';
 
-            const apiUrl = `/puzzle/solve_question/${puzzleId}/${questionId}/`;
+            const apiUrl = `/puzzle/test_question/${puzzleId}/${questionId}/`;
             console.log(`Sending request to: ${apiUrl}`);
 
             fetch(apiUrl, {

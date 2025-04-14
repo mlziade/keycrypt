@@ -145,7 +145,7 @@ class MyPuzzlesView(View):
             'puzzles': puzzles,
         })
 
-def solve_question(request, puzzle_id, question_id):
+def test_question(request, puzzle_id, question_id):
     try:
         puzzle: Puzzle = Puzzle.objects.get(id=puzzle_id)
         question: PuzzleQuestion = PuzzleQuestion.objects.get(id=question_id, puzzle=puzzle)
