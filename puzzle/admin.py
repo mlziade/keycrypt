@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Puzzle, PuzzleQuestions
+from .models import Puzzle, PuzzleQuestion, PuzzleSolved
 
 @admin.register(Puzzle)
 class PuzzleAdmin(admin.ModelAdmin):
@@ -9,10 +9,18 @@ class PuzzleAdmin(admin.ModelAdmin):
     search_fields = ('id', 'created_by__username', 'encrypted_message')
     readonly_fields = ('created_at', 'updated_at')
 
-@admin.register(PuzzleQuestions)
+@admin.register(PuzzleQuestion)
 class PuzzleQuestionsAdmin(admin.ModelAdmin):
     list_display = ('id', 'puzzle', 'question', 'created_at')
     list_display_links = ('id', 'puzzle', 'question')
     list_filter = ('puzzle', 'created_at')
     search_fields = ('id', 'puzzle__id', 'question', 'answer')
     readonly_fields = ('created_at',)
+
+@admin.register(PuzzleSolved)
+class PuzzleSolvedAdmin(admin.ModelAdmin):
+    list_display = ('id', 'puzzle', 'solved_by', 'solved_at')
+    list_display_links = ('id', 'puzzle', 'solved_by')
+    list_filter = ('puzzle', 'solved_by', 'solved_at')
+    search_fields = ('id', 'puzzle__id', 'solved_by__username')
+    readonly_fields = ('solved_at',)

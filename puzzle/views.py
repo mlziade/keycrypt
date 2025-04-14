@@ -7,7 +7,7 @@ from django.utils.decorators import method_decorator
 from django.http import JsonResponse
 
 from .forms import CreatePuzzleForm, QuestionFormSet
-from .models import Puzzle, PuzzleQuestions
+from .models import Puzzle, PuzzleQuestion, PuzzleSolved
 from .services import encrypt_message
 
 from users.models import Profile
@@ -45,7 +45,7 @@ class CreatePuzzleView(View):
                     solution_text = question_form.cleaned_data.get('solution')
 
                     if question_text and solution_text:
-                        question = PuzzleQuestions(
+                        question = PuzzleQuestion(
                             puzzle=puzzle,
                             question=question_text,
                             solution=solution_text
@@ -79,7 +79,7 @@ class ViewPuzzleView(View):
     def get(self, request, puzzle_id):
         try:
             puzzle = Puzzle.objects.get(id=puzzle_id)
-            questions = PuzzleQuestions.objects.filter(puzzle=puzzle)
+            questions = PuzzleQuestion.objects.filter(puzzle=puzzle)
 
             return render(request, 'view_puzzle.html', {
                 'puzzle': puzzle,
@@ -93,7 +93,7 @@ class SolvePuzzleView(View):
     def get(self, request, puzzle_id):
         try:
             puzzle: Puzzle = Puzzle.objects.get(id=puzzle_id)
-            questions: QuerySet[PuzzleQuestions] = PuzzleQuestions.objects.filter(puzzle=puzzle)
+            questions: QuerySet[PuzzleQuestion] = PuzzleQuestion.objects.filter(puzzle=puzzle)
 
             return render(request, 'solve_puzzle.html', {
                 'puzzle': puzzle,
@@ -106,16 +106,24 @@ class SolvePuzzleView(View):
     def post(self, request, puzzle_id):
         try:
             puzzle: Puzzle = Puzzle.objects.get(id=puzzle_id)
-            questions: QuerySet[PuzzleQuestions] = PuzzleQuestions.objects.filter(puzzle=puzzle)
+            questions: QuerySet[PuzzleQuestion] = PuzzleQuestion.objects.filter(puzzle=puzzle)
 
+            # Get the answers from the form
             answers = request.POST.getlist('answers')
             solutions = [question.solution for question in questions]
 
+            # Check if the answers match the solutions
             if sorted(answers) == sorted(solutions):
-                # messages.success(request, "Congratulations! You've solved the puzzle.")
+                # Added the solved event to the database
+                solved_puzzle = PuzzleSolved(
+                    puzzle=puzzle,
+                    solved_by=request.user if request.user.is_authenticated else None
+                )
+                solved_puzzle.save()
+                messages.success(request, "Congratulations! You've solved the puzzle.")
                 return redirect('home')
             else:
-                # messages.error(request, "Incorrect answers. Please try again.")
+                messages.error(request, "Incorrect answers. Please try again.")
                 return render(request, 'solve_puzzle.html', {
                     'puzzle': puzzle,
                     'questions': questions,
@@ -135,7 +143,7 @@ class MyPuzzlesView(View):
 def solve_question(request, puzzle_id, question_id):
     try:
         puzzle: Puzzle = Puzzle.objects.get(id=puzzle_id)
-        question: PuzzleQuestions = PuzzleQuestions.objects.get(id=question_id, puzzle=puzzle)
+        question: PuzzleQuestion = PuzzleQuestion.objects.get(id=question_id, puzzle=puzzle)
 
         if request.method == 'POST':
             answer = request.POST.get('answer')
@@ -155,6 +163,6 @@ def solve_question(request, puzzle_id, question_id):
                     'message': "Method not allowed."
                 }, status=405)
         
-    except (Puzzle.DoesNotExist, PuzzleQuestions.DoesNotExist):
+    except (Puzzle.DoesNotExist, PuzzleQuestion.DoesNotExist):
         messages.error(request, "Puzzle or question not found.")
         return redirect('home')

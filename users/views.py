@@ -7,6 +7,8 @@ from django.contrib.auth.forms import AuthenticationForm
 
 from .models import Profile
 
+from puzzle.models import Puzzle
+
 class ProfileLoginView(View):
     def get(self, request):
         form = AuthenticationForm(request=request, data=None)        
@@ -27,3 +29,17 @@ class ProfileLogoutView(View):
     def post(self, request):
         logout(request)
         return redirect('home')
+    
+class ProfileView(View):
+    @method_decorator(login_required(login_url='users:login'))
+    def get(self, request):
+        profile: Profile = request.user
+
+        puzzles = Puzzle.objects.filter(created_by=profile)
+        solved_puzzles = puzzles.filter(solved_puzzles__solved_by=profile)
+
+        return render(request, 'user_profile.html', {
+            'profile': profile,
+            'puzzles': puzzles,
+            'solved_puzzles': solved_puzzles,
+        })

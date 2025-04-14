@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+
+{% block title %}
+    My Profile
+{% endblock %}
+
+{% block extra_css %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'user_profile.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+{% endblock %}
+
+{% block content %}
+    <div class="profile-container">
+        <div class="profile-header">
+            <div class="profile-picture-container">
+                <div class="profile-picture-placeholder">
+                    <i class="bi bi-person-fill"></i>
+                </div>
+            </div>
+            <div class="profile-info">
+                <h2>{{ user.get_full_name|default:user.username }}</h2>
+                <p><i class="bi bi-envelope"></i> {{ user.email }}</p>
+                {% if user.personal_url %}
+                <p><i class="bi bi-link-45deg"></i> <a href="{{ user.personal_url }}" target="_blank">{{ user.personal_url }}</a></p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="puzzles-container">
+        <ul class="nav nav-tabs mb-4" id="puzzlesTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="created-puzzles-tab" data-bs-toggle="tab" 
+                    data-bs-target="#created-puzzles" type="button" role="tab" aria-selected="true">
+                    <i class="bi bi-puzzle"></i> My Created Puzzles
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="solved-puzzles-tab" data-bs-toggle="tab" 
+                    data-bs-target="#solved-puzzles" type="button" role="tab" aria-selected="false">
+                    <i class="bi bi-check2-all"></i> Solved Puzzles
+                </button>
+            </li>
+        </ul>
+
+        {% load django_bootstrap5 %}
+        {% bootstrap_messages %}
+
+        <div class="tab-content" id="puzzlesTabsContent">
+            <!-- My Created Puzzles Tab -->
+            <div class="tab-pane fade show active" id="created-puzzles" role="tabpanel">
+                {% if puzzles %}
+                    <div class="table-responsive">
+                        <table class="table table-hover puzzle-table">
+                            <thead>
+                                <tr>
+                                    <th>Puzzle #</th>
+                                    <th>One-Time-Solve</th>
+                                    <th>Status</th>
+                                    <th>Expires On</th>
+                                    <th>Created On</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for puzzle in puzzles %}
+                                    <tr>
+                                        <td>{{ puzzle.id }}</td>
+                                        <td>
+                                            {% if puzzle.is_one_time_view %}
+                                                <span class="badge bg-success"><i class="bi bi-check-lg"></i> Yes</span>
+                                            {% else %}
+                                                <span class="badge bg-secondary"><i class="bi bi-x-lg"></i> No</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if puzzle.was_solved %}
+                                                <span class="badge bg-success">Solved</span>
+                                            {% else %}
+                                                <span class="badge bg-secondary">Unsolved</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if puzzle.self_destruct_at %}
+                                                {{ puzzle.self_destruct_at|date:"M d, Y H:i" }}
+                                            {% else %}
+                                                <span class="text-muted">Never</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ puzzle.created_at|date:"M d, Y" }}</td>
+                                        <td>
+                                            <a href="{% url 'puzzle:view_puzzle' puzzle.id %}" class="btn btn-primary btn-sm">
+                                                <i class="bi bi-eye"></i> View
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="alert alert-info mt-4" role="alert">
+                        You haven't created any puzzles yet. 
+                        <a href="{% url 'puzzle:create_puzzle' %}" class="alert-link">Create your first puzzle</a>!
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Solved Puzzles Tab -->
+            <div class="tab-pane fade" id="solved-puzzles" role="tabpanel">
+                {% if solved_puzzles %}
+                    <div class="table-responsive">
+                        <table class="table table-hover puzzle-table">
+                            <thead>
+                                <tr>
+                                    <th>Puzzle #</th>
+                                    <th>Creator</th>
+                                    <th>Difficulty</th>
+                                    <th>Solved On</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for solved in solved_puzzles %}
+                                    <tr>
+                                        <td>{{ solved.id }}</td>
+                                        <td>{{ solved.created_by.username }}</td>
+                                        <td>
+                                            {% if solved.difficulty == 'easy' %}
+                                                <span class="badge bg-success">Easy</span>
+                                            {% elif solved.difficulty == 'medium' %}
+                                                <span class="badge bg-warning">Medium</span>
+                                            {% else %}
+                                                <span class="badge bg-danger">Hard</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ solved.solved_at|default:solved.updated_at|date:"M d, Y" }}</td>
+                                        <td>
+                                            <a href="{% url 'puzzle:view_puzzle' solved.id %}" class="btn btn-primary btn-sm">
+                                                <i class="bi bi-eye"></i> View
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="alert alert-info mt-4" role="alert">
+                        You haven't solved any puzzles yet. 
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
