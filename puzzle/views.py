@@ -108,6 +108,11 @@ class SolvePuzzleView(View):
             puzzle: Puzzle = Puzzle.objects.get(id=puzzle_id)
             questions: QuerySet[PuzzleQuestion] = PuzzleQuestion.objects.filter(puzzle=puzzle)
 
+            # If the puzzle hasnt been solved yet, set the is_solved field to True IF the user is not the creator
+            if not puzzle.is_solved and request.user != puzzle.created_by:
+                puzzle.is_solved = True
+                puzzle.save()
+
             # Get the answers from the form
             answers = request.POST.getlist('answers')
             solutions = [question.solution for question in questions]
