@@ -33,11 +33,16 @@ class CreatePuzzleView(View):
             if request.user.is_authenticated:
                 profile: Profile = request.user
                 puzzle.created_by = profile                
-
             puzzle.save()
 
-            solutions: list[str] = []
+            if len(question_formset) == 0:
+                messages.error(request, "Please add at least one question.")
+                return render(request, 'create_puzzle.html', {
+                    'form': form,
+                    'question_formset': question_formset,
+                })
 
+            solutions: list[str] = []
             # Process the questions formset
             for question_form in question_formset:
                 if question_form.cleaned_data:
@@ -66,7 +71,7 @@ class CreatePuzzleView(View):
 
             messages.success(request, "Puzzle created successfully!")
 
-            return redirect('home')
+            return redirect('puzzle:view_puzzle', puzzle_id=puzzle.id)
         else:
             # If forms are not valid, re-render the page with errors
             messages.error(request, "Please correct the errors below.")
