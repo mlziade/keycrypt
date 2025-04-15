@@ -36,6 +36,28 @@
     display: flex;
     justify-content: flex-end;
     margin-top: 2rem;
+    gap: 10px; /* Add space between buttons */
+}
+
+.btn-copy-url {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: background-color 0.3s;
+}
+
+.btn-copy-url:hover {
+    background-color: #0069d9;
+}
+
+.btn-copy-url i {
+    font-size: 1rem;
 }
 
 .btn-report {
