@@ -18,8 +18,15 @@
         {% bootstrap_messages %}
 
         <div class="encrypted-message-container text-center mt-4 mb-4">
-            <p class="encrypted-message">{{ puzzle.encrypted_message }}</p>
+            <p class="encrypted-message">
+            {% if decrypted_message %}
+                {{ decrypted_message }}
+            {% else %}
+                {{ puzzle.encrypted_message }}
+            {% endif %}
+            </p>
         </div>
+
 
         {% if questions %}
             <div class="questions-section mt-4">

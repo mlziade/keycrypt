@@ -8,7 +8,7 @@ from django.http import JsonResponse
 
 from .forms import CreatePuzzleForm, CreatePuzzleQuestionsFormSet
 from .models import Puzzle, PuzzleQuestion, PuzzleSolved, PuzzleReport
-from .services import encrypt_message
+from .services import encrypt_message, decrypt_message
 
 from users.models import Profile
 
@@ -130,8 +130,21 @@ class SolvePuzzleView(View):
                     solved_by=request.user if request.user.is_authenticated else None
                 )
                 solved_puzzle.save()
+
+                # Decrypt the message using the solutions as the password
+                decrypted_message: str = decrypt_message(
+                    ciphertext=puzzle.encrypted_message,
+                    nonce=puzzle.nonce,
+                    salt=puzzle.salt,
+                    password=solutions,
+                )
+
                 messages.success(request, "Congratulations! You've solved the puzzle.")
-                return redirect('home')
+                return render(request, 'solve_puzzle.html', {
+                    'puzzle': puzzle,
+                    'questions': questions,
+                    'decrypted_message': decrypted_message,
+                })
             else:
                 messages.error(request, "Incorrect answers. Please try again.")
                 return render(request, 'solve_puzzle.html', {

@@ -36,7 +36,7 @@ def decrypt_message(password: list[str], ciphertext: str, nonce: str, salt: str)
 
     # Derive the key using the same parameters
     kdf = Scrypt(salt=salt, length=32, n=2**14, r=8, p=1)
-    key = kdf.derive(password.encode())
+    key = kdf.derive(password)
 
     # Decrypt using AES-GCM
     aesgcm = AESGCM(key)
