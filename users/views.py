@@ -4,11 +4,12 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.contrib.auth.forms import AuthenticationForm
+from django.db.models import QuerySet
 
 from .models import Profile
 from .forms import CreateUserForm
 
-from puzzle.models import Puzzle
+from puzzle.models import Puzzle, PuzzleSolved
 
 class ProfileLoginView(View):
     def get(self, request):
@@ -61,8 +62,8 @@ class ProfileView(View):
     def get(self, request):
         profile: Profile = request.user
 
-        puzzles = Puzzle.objects.filter(created_by=profile)
-        solved_puzzles = puzzles.filter(solved_puzzles__solved_by=profile)
+        puzzles: QuerySet[Puzzle] = Puzzle.objects.filter(created_by=profile)
+        solved_puzzles: QuerySet[PuzzleSolved] = puzzles.filter(solved_puzzles__solved_by=profile)
 
         return render(request, 'user_profile.html', {
             'profile': profile,

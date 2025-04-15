@@ -57,7 +57,7 @@
                                 <tr>
                                     <th>Puzzle #</th>
                                     <th>One-Time-Solve</th>
-                                    <th>Status</th>
+                                    <th>Solved</th>
                                     <th>Expires On</th>
                                     <th>Created On</th>
                                     <th>Actions</th>
@@ -76,9 +76,9 @@
                                         </td>
                                         <td>
                                             {% if puzzle.was_solved %}
-                                                <span class="badge bg-success">Solved</span>
+                                                <span class="badge bg-success"><i class="bi bi-check-lg"></i> Yes</span>
                                             {% else %}
-                                                <span class="badge bg-secondary">Unsolved</span>
+                                                <span class="badge bg-secondary">-</span>
                                             {% endif %}
                                         </td>
                                         <td>
@@ -116,7 +116,6 @@
                                 <tr>
                                     <th>Puzzle #</th>
                                     <th>Creator</th>
-                                    <th>Difficulty</th>
                                     <th>Solved On</th>
                                     <th>Actions</th>
                                 </tr>
@@ -125,14 +124,11 @@
                                 {% for solved in solved_puzzles %}
                                     <tr>
                                         <td>{{ solved.id }}</td>
-                                        <td>{{ solved.created_by.username }}</td>
                                         <td>
-                                            {% if solved.difficulty == 'easy' %}
-                                                <span class="badge bg-success">Easy</span>
-                                            {% elif solved.difficulty == 'medium' %}
-                                                <span class="badge bg-warning">Medium</span>
+                                            {% if solved.created_by %}
+                                                {{ solved.created_by.username }}
                                             {% else %}
-                                                <span class="badge bg-danger">Hard</span>
+                                                -
                                             {% endif %}
                                         </td>
                                         <td>{{ solved.solved_at|default:solved.updated_at|date:"M d, Y" }}</td>
