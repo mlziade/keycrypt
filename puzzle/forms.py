@@ -37,7 +37,7 @@ class CreatePuzzleForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
 
 
-class QuestionForm(forms.Form):
+class CreatePuzzleQuestionsForm(forms.Form):
     question = forms.CharField(
         required=True,
         widget=forms.Textarea(attrs={'rows': 3, 'placeholder': 'Enter the question'}),
@@ -50,4 +50,4 @@ class QuestionForm(forms.Form):
         label="Solution",
     )
 
-QuestionFormSet = formset_factory(QuestionForm, extra=1, max_num=10, min_num=1)
+CreatePuzzleQuestionsFormSet = formset_factory(CreatePuzzleQuestionsForm, extra=1, max_num=10, min_num=1)

@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.http import JsonResponse
 
-from .forms import CreatePuzzleForm, QuestionFormSet
+from .forms import CreatePuzzleForm, CreatePuzzleQuestionsFormSet
 from .models import Puzzle, PuzzleQuestion, PuzzleSolved, PuzzleReport
 from .services import encrypt_message
 
@@ -15,7 +15,7 @@ from users.models import Profile
 class CreatePuzzleView(View):
     def get(self, request):
         form: CreatePuzzleForm = CreatePuzzleForm()
-        question_formset = QuestionFormSet(prefix='questions')
+        question_formset = CreatePuzzleQuestionsFormSet(prefix='questions')
         return render(request, 'create_puzzle.html', {
             'form': form,
             'question_formset': question_formset,
@@ -23,7 +23,7 @@ class CreatePuzzleView(View):
 
     def post(self, request):
         form = CreatePuzzleForm(request.POST)
-        question_formset = QuestionFormSet(request.POST, prefix='questions')
+        question_formset = CreatePuzzleQuestionsFormSet(request.POST, prefix='questions')
 
         if form.is_valid() and question_formset.is_valid():
             # Process the puzzle
