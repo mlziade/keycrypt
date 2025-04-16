@@ -25,6 +25,11 @@
     color: #bbb;
     max-width: 800px;
     margin: 0 auto;
+    transition: filter 0.3s ease; /* Add smooth transition */
+}
+
+.tagline:hover {
+    filter: blur(3px); /* Apply blur effect on hover */
 }
 
 /* Features section */
