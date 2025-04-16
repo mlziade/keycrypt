@@ -21,12 +21,12 @@
         {% bootstrap_messages %}
 
         <div class="encrypted-message-container text-center mt-4 mb-4">
-            <p class="encrypted-message">
-            {% if decrypted_message %}
-                {{ decrypted_message }}
-            {% else %}
-                {{ puzzle.encrypted_message }}
-            {% endif %}
+            <p class="encrypted-message {% if not decrypted_message %}blurred{% endif %}">
+                {% if decrypted_message %}
+                    {{ decrypted_message }}
+                {% else %}
+                    {{ puzzle.encrypted_message }}
+                {% endif %}
             </p>
         </div>
 

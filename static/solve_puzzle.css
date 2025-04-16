@@ -40,6 +40,11 @@
     overflow-wrap: break-word;
     max-height: 200px;
     overflow-y: auto;
+    transition: filter 0.3s ease;
+}
+
+.encrypted-message.blurred {
+    filter: blur(3px);
 }
 
 .questions-section h3 {
