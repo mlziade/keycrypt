@@ -11,7 +11,7 @@ from .forms import CreateUserForm
 
 from puzzle.models import Puzzle, PuzzleSolved
 
-class ProfileLoginView(View):
+class LoginView(View):
     def get(self, request):
         form = AuthenticationForm(request=request, data=None)        
         return render(request, 'login.html', {'form': form})
@@ -26,7 +26,7 @@ class ProfileLoginView(View):
             # Form is not valid, show form with errors
             return render(request, 'login.html', {'form': form})
 
-class ProfileLogoutView(View):
+class LogoutView(View):
     @method_decorator(login_required(login_url='users:login'))
     def post(self, request):
         logout(request)
