@@ -222,6 +222,36 @@ input, select, textarea {
     border-color: #333;
 }
 
+.animated-link {
+    color: var(--light-color);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+    padding: 0.2rem 0;
+    position: relative;
+    display: inline-block;
+}
+
+.animated-link:hover {
+    color: var(--accent-color);
+    text-decoration: none;
+}
+
+.animated-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: var(--accent-color);
+    transition: width 0.3s ease;
+}
+
+.animated-link:hover::after {
+    width: 100%;
+}
+
 @media (max-width: 768px) {
     .navbar {
         flex-direction: column;
