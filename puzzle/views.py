@@ -86,6 +86,9 @@ class ViewPuzzleView(View):
             puzzle = Puzzle.objects.get(id=puzzle_id)
             questions = PuzzleQuestion.objects.filter(puzzle=puzzle)
 
+            if puzzle.is_solved:
+                return redirect('home')
+
             return render(request, 'view_puzzle.html', {
                 'puzzle': puzzle,
                 'questions': questions,
@@ -100,6 +103,9 @@ class SolvePuzzleView(View):
             puzzle: Puzzle = Puzzle.objects.get(id=puzzle_id)
             questions: QuerySet[PuzzleQuestion] = PuzzleQuestion.objects.filter(puzzle=puzzle)
 
+            if puzzle.is_solved:
+                return redirect('home')
+
             return render(request, 'solve_puzzle.html', {
                 'puzzle': puzzle,
                 'questions': questions,
@@ -113,11 +119,6 @@ class SolvePuzzleView(View):
             puzzle: Puzzle = Puzzle.objects.get(id=puzzle_id)
             questions: QuerySet[PuzzleQuestion] = PuzzleQuestion.objects.filter(puzzle=puzzle)
 
-            # If the puzzle hasnt been solved yet, set the is_solved field to True IF the user is not the creator
-            if not puzzle.is_solved and request.user != puzzle.created_by:
-                puzzle.is_solved = True
-                puzzle.save()
-
             # Get the answers from the form
             answers = request.POST.getlist('answers')
             solutions = [question.solution for question in questions]
@@ -130,6 +131,11 @@ class SolvePuzzleView(View):
                     solved_by=request.user if request.user.is_authenticated else None
                 )
                 solved_puzzle.save()
+
+                # If the puzzle hasnt been solved yet, set the is_solved field to True IF the user is not the creator
+                if not puzzle.is_solved and request.user != puzzle.created_by:
+                    puzzle.is_solved = True
+                    puzzle.save()
 
                 # Decrypt the message using the solutions as the password
                 decrypted_message: str = decrypt_message(
