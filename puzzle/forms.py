@@ -36,7 +36,6 @@ class CreatePuzzleForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-
 class CreatePuzzleQuestionsForm(forms.Form):
     question = forms.CharField(
         required=True,
@@ -48,6 +47,13 @@ class CreatePuzzleQuestionsForm(forms.Form):
         required=True,
         widget=forms.TextInput(attrs={'placeholder': 'Enter the answer to the question'}),
         label="Solution",
+        help_text="The solution must be a single word."
     )
+
+    def clean_solution(self):
+        solution = self.cleaned_data.get('solution')
+        if ' ' in solution.strip():
+            raise forms.ValidationError("The solution must be a single word.")
+        return solution
 
 CreatePuzzleQuestionsFormSet = formset_factory(CreatePuzzleQuestionsForm, extra=1, max_num=10, min_num=1)
