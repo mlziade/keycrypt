@@ -73,8 +73,9 @@
             <button type="submit" class="btn btn-primary w-100">Create Puzzle</button>
         </form>
     </div>
+{% endblock %}
 
-    {% block extra_js %}
+{% block extra_js %}
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const addFormButton = document.getElementById('add-question-form-btn');
@@ -108,5 +109,4 @@
             });
         });
     </script>
-    {% endblock %}
 {% endblock %}
