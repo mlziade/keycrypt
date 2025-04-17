@@ -73,4 +73,4 @@ class CreatePuzzleQuestionsForm(forms.Form):
                 raise forms.ValidationError("The hint must be at most 10 characters long.")
         return hint
 
-CreatePuzzleQuestionsFormSet = formset_factory(CreatePuzzleQuestionsForm, extra=1, max_num=10, min_num=1)
+CreatePuzzleQuestionsFormSet = formset_factory(CreatePuzzleQuestionsForm, extra=0, max_num=10, min_num=1)
