@@ -49,3 +49,12 @@ class PuzzleReport(models.Model):
 
     def __str__(self):
         return str(self.id)
+    
+class PuzzleQuestionHint(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    question = models.ForeignKey(PuzzleQuestion, null=False, on_delete=models.CASCADE, related_name='hints')
+    hint = models.TextField(null=False, blank=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return str(self.id)
