@@ -5,6 +5,7 @@ from django.db.models import QuerySet
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.http import JsonResponse
+from django.utils.timezone import now
 
 from .forms import CreatePuzzleForm, CreatePuzzleQuestionsFormSet
 from .models import Puzzle, PuzzleQuestion, PuzzleSolved, PuzzleReport
@@ -89,6 +90,10 @@ class ViewPuzzleView(View):
             if puzzle.one_time_view and puzzle.is_solved:
                 messages.error(request, "This puzzle has already been solved and cannot be viewed again.")
                 return redirect('home')
+            
+            if now() > puzzle.self_destruct_at:
+                messages.error(request, "This puzzle has been deleted.")
+                return redirect('home')
 
             return render(request, 'view_puzzle.html', {
                 'puzzle': puzzle,
@@ -106,6 +111,10 @@ class SolvePuzzleView(View):
 
             if puzzle.one_time_view and puzzle.is_solved:
                 messages.error(request, "This puzzle has already been solved and cannot be viewed again.")
+                return redirect('home')
+            
+            if now() > puzzle.self_destruct_at:
+                messages.error(request, "This puzzle has been deleted.")
                 return redirect('home')
 
             return render(request, 'solve_puzzle.html', {
