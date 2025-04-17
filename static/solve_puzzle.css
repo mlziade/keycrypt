@@ -171,3 +171,38 @@
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
+
+/* Hints */
+
+.hint-container {
+    margin-top: 0.75rem;
+}
+
+.hint-btn {
+    background-color: transparent;
+    color: #ffc107;
+    border-color: #ffc107;
+    padding: 4px 10px;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.3s ease;
+}
+
+.hint-btn:hover {
+    background-color: rgba(255, 193, 7, 0.1);
+}
+
+.hint-btn i {
+    font-size: 1rem;
+}
+
+.hint-text {
+    padding: 0.75rem;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    font-style: italic;
+    color: #adb5bd;
+    border-left: 3px solid #ffc107;
+}

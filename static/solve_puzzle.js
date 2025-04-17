@@ -94,4 +94,57 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
         });
     });
+
+    // Handle hint buttons
+    const hintButtons = document.querySelectorAll('.hint-btn');
+    console.log(`Found ${hintButtons.length} hint buttons`);
+
+    // In the hint button event listener
+    hintButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            const puzzleId = this.dataset.puzzleId;
+            const questionId = this.dataset.questionId;
+            const hintTextElement = document.getElementById(`hint-${questionId}`);
+
+            // If hint is already shown, toggle it off
+            if (hintTextElement.style.display === 'block') {
+                hintTextElement.style.display = 'none';
+                this.innerHTML = '<i class="bi bi-lightbulb"></i> Show Hint';
+                return;
+            }
+
+            // Show loading state
+            this.disabled = true;
+            this.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...';
+
+            // Updated API call to include puzzleId
+            fetch(`/puzzle/hint/${puzzleId}/${questionId}/`, {
+                method: 'GET',
+                headers: {
+                    'X-CSRFToken': csrfToken
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    this.disabled = false;
+
+                    if (data.status === 'success') {
+                        hintTextElement.textContent = data.hint;
+                        hintTextElement.style.display = 'block';
+                        this.innerHTML = '<i class="bi bi-lightbulb-fill"></i> Hide Hint';
+                    } else {
+                        hintTextElement.textContent = 'Sorry, no hints available.';
+                        hintTextElement.style.display = 'block';
+                        this.innerHTML = '<i class="bi bi-lightbulb"></i> Hide Message';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    this.disabled = false;
+                    this.innerHTML = '<i class="bi bi-lightbulb"></i> Show Hint';
+                    hintTextElement.textContent = 'Error loading hint. Please try again.';
+                    hintTextElement.style.display = 'block';
+                });
+        });
+    });
 });

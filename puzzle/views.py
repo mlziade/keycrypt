@@ -219,6 +219,65 @@ def test_question(request, puzzle_id, question_id):
         messages.error(request, "Puzzle or question not found.")
         return redirect('home')
 
+def show_hint(request, puzzle_id, question_id):
+    """
+    Show hints for a specific question in the puzzle.
+    Returns the first hint available for the question.
+    """
+    try:
+        # First verify the puzzle exists and is accessible
+        puzzle: Puzzle = Puzzle.objects.get(id=puzzle_id)
+        
+        # Check if puzzle should be accessible
+        if puzzle.one_time_view and puzzle.is_solved:
+            return JsonResponse({
+                'status': 'error',
+                'message': "This puzzle has already been solved and cannot be viewed."
+            }, status=403)
+        
+        if puzzle.self_destruct_at and now() > puzzle.self_destruct_at:
+            return JsonResponse({
+                'status': 'error',
+                'message': "This puzzle has been deleted."
+            }, status=404)
+        
+        # Get the question, ensuring it belongs to this puzzle
+        question: PuzzleQuestion = PuzzleQuestion.objects.get(id=question_id, puzzle=puzzle)
+        
+        # Use the related_name from the model to get hints directly
+        hints = question.hints.all().order_by('id')  # Order by ID to get the first hint
+
+        if hints.exists():
+            hint = hints.first().hint
+            return JsonResponse({
+                'status': 'success',
+                'hint': hint,
+                'hint_count': hints.count()
+            })
+        else:
+            return JsonResponse({
+                'status': 'error',
+                'message': "No hints available for this question."
+            }, status=404)
+            
+    except Puzzle.DoesNotExist:
+        return JsonResponse({
+            'status': 'error',
+            'message': "Puzzle not found."
+        }, status=404)
+    except PuzzleQuestion.DoesNotExist:
+        return JsonResponse({
+            'status': 'error',
+            'message': "Question not found for this puzzle."
+        }, status=404)
+    except Exception as e:
+        # Log the exception for debugging
+        print(f"Error showing hint: {str(e)}")
+        return JsonResponse({
+            'status': 'error',
+            'message': "An error occurred while retrieving the hint."
+        }, status=500)
+
 def report_puzzle(request, puzzle_id):
     if request.method == 'POST':
         try:
