@@ -83,10 +83,11 @@ class CreatePuzzleView(View):
 class ViewPuzzleView(View):
     def get(self, request, puzzle_id):
         try:
-            puzzle = Puzzle.objects.get(id=puzzle_id)
-            questions = PuzzleQuestion.objects.filter(puzzle=puzzle)
+            puzzle: Puzzle = Puzzle.objects.get(id=puzzle_id)
+            questions: QuerySet[PuzzleQuestion] = PuzzleQuestion.objects.filter(puzzle=puzzle)
 
-            if puzzle.is_solved:
+            if puzzle.one_time_view and puzzle.is_solved:
+                messages.error(request, "This puzzle has already been solved and cannot be viewed again.")
                 return redirect('home')
 
             return render(request, 'view_puzzle.html', {
@@ -103,7 +104,8 @@ class SolvePuzzleView(View):
             puzzle: Puzzle = Puzzle.objects.get(id=puzzle_id)
             questions: QuerySet[PuzzleQuestion] = PuzzleQuestion.objects.filter(puzzle=puzzle)
 
-            if puzzle.is_solved:
+            if puzzle.one_time_view and puzzle.is_solved:
+                messages.error(request, "This puzzle has already been solved and cannot be viewed again.")
                 return redirect('home')
 
             return render(request, 'solve_puzzle.html', {
