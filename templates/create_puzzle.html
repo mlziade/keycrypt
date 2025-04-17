@@ -30,14 +30,34 @@
 
                 {% for form in question_formset %}
                     <div class="question-form mb-3 p-3 border rounded">
-                        {% bootstrap_form form layout='horizontal' %}
+                        <!-- Question and solution fields -->
+                        <div class="mb-3">
+                            {% bootstrap_field form.question layout="horizontal" %}
+                        </div>
+                        <div class="mb-3">
+                            {% bootstrap_field form.solution layout="horizontal" %}
+                        </div>
+                        
+                        <!-- Hint field with special styling -->
+                        <div class="hint-field">
+                            {% bootstrap_field form.hint layout="horizontal" %}
+                        </div>
                     </div>
                 {% endfor %}
             </div>
 
             <div id="empty-form-template" style="display: none;">
                  <div class="question-form mb-3 p-3 border rounded">
-                    {% bootstrap_form question_formset.empty_form layout='horizontal' %}
+                    <div class="mb-3">
+                        {% bootstrap_field question_formset.empty_form.question layout="horizontal" %}
+                    </div>
+                    <div class="mb-3">
+                        {% bootstrap_field question_formset.empty_form.solution layout="horizontal" %}
+                    </div>
+                    
+                    <div class="hint-field">
+                        {% bootstrap_field question_formset.empty_form.hint layout="horizontal" %}
+                    </div>
                  </div>
             </div>
 

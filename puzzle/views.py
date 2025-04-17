@@ -8,7 +8,7 @@ from django.http import JsonResponse
 from django.utils.timezone import now
 
 from .forms import CreatePuzzleForm, CreatePuzzleQuestionsFormSet
-from .models import Puzzle, PuzzleQuestion, PuzzleSolved, PuzzleReport
+from .models import Puzzle, PuzzleQuestion, PuzzleSolved, PuzzleReport, PuzzleQuestionHint
 from .services import encrypt_message, decrypt_message
 
 from users.models import Profile
@@ -49,6 +49,7 @@ class CreatePuzzleView(View):
                 if question_form.cleaned_data:
                     question_text = question_form.cleaned_data.get('question')
                     solution_text = question_form.cleaned_data.get('solution')
+                    hint_text = question_form.cleaned_data.get('hint', '')
 
                     if question_text and solution_text:
                         question = PuzzleQuestion(
@@ -58,6 +59,14 @@ class CreatePuzzleView(View):
                         )
                         solutions.append(solution_text)
                         question.save()
+                        
+                        # Save hint if provided
+                        if hint_text and len(hint_text.strip()) >= 5:
+                            hint = PuzzleQuestionHint(
+                                question=question,
+                                hint=hint_text
+                            )
+                            hint.save()
             
             solutions.sort()
             encrypted_message = encrypt_message(

@@ -49,11 +49,28 @@ class CreatePuzzleQuestionsForm(forms.Form):
         label="Solution",
         help_text="The solution must be a single word."
     )
+    
+    hint = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={'placeholder': 'Enter an optional hint (maximum 10 characters)'}),
+        label="Hint (Optional)",
+        help_text="You can provide an optional hint for this question."
+    )
 
     def clean_solution(self):
         solution = self.cleaned_data.get('solution')
         if ' ' in solution.strip():
             raise forms.ValidationError("The solution must be a single word.")
         return solution
+        
+    def clean_hint(self):
+        hint = self.cleaned_data.get('hint')
+        if hint:
+            hint = hint.strip()
+            if ' ' in hint:
+                raise forms.ValidationError("The hint must be a single word.")
+            if len(hint) > 10:
+                raise forms.ValidationError("The hint must be at most 10 characters long.")
+        return hint
 
 CreatePuzzleQuestionsFormSet = formset_factory(CreatePuzzleQuestionsForm, extra=1, max_num=10, min_num=1)

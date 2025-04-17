@@ -120,6 +120,28 @@ hr {
     opacity: 0.5;
 }
 
+.hint-field {
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px dashed #444;
+}
+
+.hint-field textarea {
+    background-color: #2a2a2a;
+    border-color: #3d3d3d;
+}
+
+.hint-field .form-text {
+    font-style: italic;
+    color: #aaa;
+    font-size: 0.8rem;
+}
+
+.hint-field label {
+    color: #bbb;
+    font-size: 0.95rem;
+}
+
 /* Bootstrap form elements override */
 .form-control:focus {
     background-color: #2c2c2c;
