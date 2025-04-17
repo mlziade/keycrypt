@@ -95,6 +95,7 @@ class ViewPuzzleView(View):
         try:
             puzzle: Puzzle = Puzzle.objects.get(id=puzzle_id)
             questions: QuerySet[PuzzleQuestion] = PuzzleQuestion.objects.filter(puzzle=puzzle)
+            hints : QuerySet[PuzzleQuestionHint] = PuzzleQuestionHint.objects.filter(question__in=questions)
 
             if puzzle.one_time_view and puzzle.is_solved:
                 messages.error(request, "This puzzle has already been solved and cannot be viewed again.")
@@ -107,6 +108,7 @@ class ViewPuzzleView(View):
             return render(request, 'view_puzzle.html', {
                 'puzzle': puzzle,
                 'questions': questions,
+                'hints': hints,
             })
         except Puzzle.DoesNotExist:
             messages.error(request, "Puzzle not found.")

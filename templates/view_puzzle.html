@@ -26,7 +26,19 @@
                 <ol class="list-group list-group-numbered">
                     {% for question in questions %}
                         <li class="list-group-item">
-                            {{ question.question }}
+                            <div class="question-content">{{ question.question }}</div>
+                            {% for hint in hints %}
+                                {% if hint.question.id == question.id %}
+                                    <div class="hint-container">
+                                        <button class="hint-toggle" data-question="{{ question.id }}">
+                                            <i class="bi bi-lightbulb"></i> Show Hint
+                                        </button>
+                                        <div class="hint-text" id="hint-{{ question.id }}">
+                                            {{ hint.hint }}
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
                         </li>
                     {% endfor %}
                 </ol>
@@ -56,4 +68,24 @@
 
 {% block extra_js %}
     <script src="{% static 'view_puzzle.js' %}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const hintToggleButtons = document.querySelectorAll('.hint-toggle');
+            
+            hintToggleButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const questionId = this.getAttribute('data-question');
+                    const hintText = document.getElementById(`hint-${questionId}`);
+                    
+                    if (hintText.style.display === 'block') {
+                        hintText.style.display = 'none';
+                        this.innerHTML = '<i class="bi bi-lightbulb"></i> Show Hint';
+                    } else {
+                        hintText.style.display = 'block';
+                        this.innerHTML = '<i class="bi bi-lightbulb-fill"></i> Hide Hint';
+                    }
+                });
+            });
+        });
+    </script>
 {% endblock %}
