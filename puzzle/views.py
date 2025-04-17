@@ -120,11 +120,11 @@ class SolvePuzzleView(View):
             questions: QuerySet[PuzzleQuestion] = PuzzleQuestion.objects.filter(puzzle=puzzle)
 
             # Get the answers from the form
-            answers = request.POST.getlist('answers')
-            solutions = [question.solution for question in questions]
+            user_answers = request.POST.getlist('answers')
+            puzzle_solutions = [question.solution for question in questions]
 
             # Check if the answers match the solutions
-            if sorted(answers) == sorted(solutions):
+            if sorted(user_answers) == sorted(puzzle_solutions):
                 # Added the solved event to the database
                 solved_puzzle = PuzzleSolved(
                     puzzle=puzzle,
@@ -138,11 +138,12 @@ class SolvePuzzleView(View):
                     puzzle.save()
 
                 # Decrypt the message using the solutions as the password
+                puzzle_solutions.sort()
                 decrypted_message: str = decrypt_message(
                     ciphertext=puzzle.encrypted_message,
                     nonce=puzzle.nonce,
                     salt=puzzle.salt,
-                    password=solutions,
+                    password=puzzle_solutions,
                 )
 
                 messages.success(request, "Congratulations! You've solved the puzzle.")
