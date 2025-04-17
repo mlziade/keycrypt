@@ -100,7 +100,7 @@ class ViewPuzzleView(View):
                 messages.error(request, "This puzzle has already been solved and cannot be viewed again.")
                 return redirect('home')
             
-            if now() > puzzle.self_destruct_at:
+            if puzzle.self_destruct_at and now() > puzzle.self_destruct_at:
                 messages.error(request, "This puzzle has been deleted.")
                 return redirect('home')
 
@@ -122,7 +122,7 @@ class SolvePuzzleView(View):
                 messages.error(request, "This puzzle has already been solved and cannot be viewed again.")
                 return redirect('home')
             
-            if now() > puzzle.self_destruct_at:
+            if puzzle.self_destruct_at and now() > puzzle.self_destruct_at:
                 messages.error(request, "This puzzle has been deleted.")
                 return redirect('home')
 
