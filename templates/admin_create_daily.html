@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block title %}
+    KeyCrypt - Create Daily Challenge
+{% endblock %}
+
+{% block extra_css %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'admin_create_daily.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+{% endblock %}
+
+{% block content %}
+    <div class="create-daily-container">
+        <h2>Create Daily Challenge</h2>
+
+        {% load django_bootstrap5 %}
+        {% bootstrap_messages %}
+
+        <form method="post" class="daily-form">
+            {% csrf_token %}
+            {% load django_bootstrap5 %}
+
+            <div class="daily-details mb-4">
+                <h3>Challenge Details</h3>
+                
+                <!-- Daily Challenge specific fields -->
+                {% bootstrap_field form.daily_date layout="horizontal" %}
+                {% bootstrap_field form.difficulty layout="horizontal" %}
+                {% bootstrap_field form.theme layout="horizontal" %}
+                
+                <!-- Puzzle fields -->
+                {% bootstrap_field form.message layout="horizontal" %}
+                {% bootstrap_field form.one_time_view layout="horizontal" %}
+                {% bootstrap_field form.self_destruct_at layout="horizontal" %}
+            </div>
+
+            <hr>
+            <h3>Questions</h3>
+            <div id="question-forms-container">
+                {{ question_formset.management_form }}
+
+                {% for form in question_formset %}
+                    <div class="question-form mb-3 p-3 border rounded">
+                        <!-- Question and solution fields -->
+                        <div class="mb-3">
+                            {% bootstrap_field form.question layout="horizontal" %}
+                        </div>
+                        <div class="mb-3">
+                            {% bootstrap_field form.solution layout="horizontal" %}
+                        </div>
+                        
+                        <!-- Hint field with special styling -->
+                        <div class="hint-field">
+                            {% bootstrap_field form.hint layout="horizontal" %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div id="empty-form-template" style="display: none;">
+                 <div class="question-form mb-3 p-3 border rounded">
+                    <div class="mb-3">
+                        {% bootstrap_field question_formset.empty_form.question layout="horizontal" %}
+                    </div>
+                    <div class="mb-3">
+                        {% bootstrap_field question_formset.empty_form.solution layout="horizontal" %}
+                    </div>
+                    
+                    <div class="hint-field">
+                        {% bootstrap_field question_formset.empty_form.hint layout="horizontal" %}
+                    </div>
+                 </div>
+            </div>
+
+            <div class="question-button-group mb-3">
+                <button type="button" id="add-question-form-btn" class="btn btn-success btn-sm">
+                    <i class="bi bi-plus-circle"></i> Add Question
+                </button>
+                <button type="button" id="remove-question-form-btn" class="btn btn-danger btn-sm">
+                    <i class="bi bi-dash-circle"></i> Remove Last Question
+                </button>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Create Daily Challenge</button>
+        </form>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const addFormButton = document.getElementById('add-question-form-btn');
+            const removeFormButton = document.getElementById('remove-question-form-btn');
+            const formsContainer = document.getElementById('question-forms-container');
+            const emptyFormTemplate = document.getElementById('empty-form-template').innerHTML;
+            const totalFormsInput = document.getElementById('id_{{ question_formset.prefix }}-TOTAL_FORMS');
+            const initialFormsInput = document.getElementById('id_{{ question_formset.prefix }}-INITIAL_FORMS');
+            const formsetPrefix = '{{ question_formset.prefix }}';
+            const minForms = 0;
+
+            addFormButton.addEventListener('click', function() {
+                let currentFormCount = parseInt(totalFormsInput.value, 10);
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = emptyFormTemplate.replace(/__prefix__/g, currentFormCount);
+                formsContainer.appendChild(tempDiv.firstElementChild);
+                totalFormsInput.value = currentFormCount + 1;
+            });
+
+            removeFormButton.addEventListener('click', function() {
+                let currentFormCount = parseInt(totalFormsInput.value, 10);
+                if (currentFormCount > minForms) {
+                    const allForms = formsContainer.querySelectorAll('.question-form');
+                    if (allForms.length > 0) {
+                        allForms[allForms.length - 1].remove();
+                        totalFormsInput.value = currentFormCount - 1;
+                    }
+                } else {
+                    alert("Cannot remove any more questions.");
+                }
+            });
+        });
+    </script>
+{% endblock %}

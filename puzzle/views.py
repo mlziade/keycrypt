@@ -61,7 +61,7 @@ class CreatePuzzleView(View):
                         question.save()
                         
                         # Save hint if provided
-                        if hint_text and len(hint_text.strip()) >= 5:
+                        if hint_text:
                             hint = PuzzleQuestionHint(
                                 question=question,
                                 hint=hint_text

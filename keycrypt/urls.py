@@ -27,4 +27,5 @@ urlpatterns = [
     path('', HomeView.as_view(), name='home'),
     path('users/', include('users.urls', namespace='users')),
     path('puzzle/', include('puzzle.urls', namespace='puzzle')),
+    path('daily/', include('daily.urls', namespace='daily')),
 ]

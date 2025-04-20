@@ -1,0 +1,85 @@
+.no-challenge-container {
+    text-align: center;
+}
+
+.no-challenge-message {
+    background-color: #242424;
+    padding: 3rem 1rem;
+    border-radius: 6px;
+    border: 1px solid #333;
+    margin: 2rem 0;
+}
+
+.icon-container {
+    margin-bottom: 1rem;
+}
+
+.icon-container i {
+    font-size: 3rem;
+    color: #9de0f6;
+    opacity: 0.8;
+}
+
+.no-challenge-message h3 {
+    font-size: 1.5rem;
+    color: #fff;
+    margin-bottom: 1rem;
+}
+
+.no-challenge-message p {
+    color: #adb5bd;
+    font-size: 1.1rem;
+    max-width: 500px;
+    margin: 0 auto 1.5rem;
+}
+
+.next-update {
+    display: inline-block;
+    background-color: rgba(13, 110, 253, 0.1);
+    border: 1px solid rgba(13, 110, 253, 0.3);
+    color: #9de0f6;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+.next-update i {
+    margin-right: 5px;
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.btn-outline-primary {
+    color: #9de0f6;
+    border-color: #0d6efd;
+}
+
+.btn-outline-primary:hover {
+    background-color: rgba(13, 110, 253, 0.1);
+    color: #fff;
+}
+
+.refresh-btn {
+    transition: transform 0.3s ease;
+}
+
+.refresh-btn:hover {
+    transform: rotate(180deg);
+}
+
+@media (max-width: 576px) {
+    .action-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .action-buttons .btn {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+}

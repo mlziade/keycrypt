@@ -38,6 +38,10 @@
         <ul class="nav-links">
             <li><a href="{% url 'home' %}" class="nav-link">Home</a></li>
             <li><a href="{% url 'puzzle:create_puzzle' %}" class="nav-link">Create Puzzle</a></li>
+            <li><a href="{% url 'daily:solve_daily_puzzle' %}" class="nav-link">Daily Puzzle</a></li>
+            {% if user.is_superuser%}
+                <li><a href="{% url 'daily:daily_challenge_create' %}" class="nav-link">Create Daily Puzzle</a></li>
+            {% endif %}
             {% if user.is_authenticated %}
                 {% comment %} <li><a href="{% url 'puzzle:my_puzzles' %}" class="nav-link">My Puzzles</a></li> {% endcomment %}
                 <li><a href="{% url 'users:profile' %}" class="nav-link">Profile</a></li>
