@@ -1,20 +1,29 @@
 # KeyCrypt
 
-KeyCrypt is a fun and challenging puzzle and messaging site. You can create puzzles for friends and other players to solve! Only then can they decrypt your message...
+KeyCrypt is a fun and challenging puzzle and messaging site. You can create puzzles for friends and other players to solve! Only then can they decrypt your message.
 
-Access on [keycrypt.mlziade.com.br](https://keycrypt.mlziade.com.br)!
-
-## Description
+Access it on [keycrypt.mlziade.com.br](https://keycrypt.mlziade.com.br)!
 
 ## Features
 
--   Create personalized puzzles with questions and answers acting as cryptographic keys.
--   Access puzzles easily using unique IDs.
--   Control puzzle access: make them view-only or set them to automatically disappear after a set time.
+*   **Puzzle Creation**: Design personalized puzzles with custom questions where answers serve as cryptographic keys.
+*   **Easy Sharing**: Share puzzles via unique IDs and direct URLs.
+*   **Hint System**: Get hints to guide you to the answer.
+*   **Access Controls**: Set puzzles as view-only or configure auto-deletion after specified time periods.
+*   **Daily Challenges**: Tackle thematic puzzles created by our team of models ;)
+*   **User Profiles**: Track created and solved puzzles in your personalized profile page.
 
 ## Roadmap
 
--   Implement caching mechanisms to optimize performance during periods of high traffic to specific puzzles.
--   Incorporate rate-limiting strategies to mitigate brute-force attempts.
--   Introduce a weekly contest leaderboard to foster competition.
--   Enable direct user-to-user messaging functionality.
+*   Performance optimization via caching for high-traffic puzzles.
+*   Security enhancements including rate-limiting to prevent brute-force attempts.
+*   Weekly leaderboards to encourage friendly competition.
+*   Direct messaging system between users.
+
+## Infrastructure
+
+*   Deployed on an Ubuntu Linux server on a Hetzner VPS.
+*   Django backend with sqlite database
+*   Uses Gunicorn as the WSGI production server.
+*   Nginx as the reverse proxy for handling incoming calls.
+*   Ollama as the LLM model provided on the machine.
