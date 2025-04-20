@@ -10,6 +10,7 @@ from .models import Profile
 from .forms import CreateUserForm
 
 from puzzle.models import Puzzle, PuzzleSolved
+from daily.models import DailyChallenge
 
 class LoginView(View):
     def get(self, request):
@@ -62,11 +63,13 @@ class ProfileView(View):
     def get(self, request):
         profile: Profile = request.user
 
-        puzzles: QuerySet[Puzzle] = Puzzle.objects.filter(created_by=profile)
-        solved_puzzles: QuerySet[PuzzleSolved] = puzzles.filter(solved_puzzles__solved_by=profile)
+        user_created_puzzles: QuerySet[Puzzle] = Puzzle.objects.filter(created_by=profile)
+        solved_puzzles: QuerySet[Puzzle] = Puzzle.objects.filter(solved_puzzles__solved_by=profile)
+        solved_daily_challenges: QuerySet[DailyChallenge] = DailyChallenge.objects.filter(solved_puzzles__solved_by=profile)
 
         return render(request, 'user_profile.html', {
             'profile': profile,
-            'puzzles': puzzles,
+            'user_created_puzzles': user_created_puzzles,
             'solved_puzzles': solved_puzzles,
+            'solved_daily_challenges': solved_daily_challenges,
         })
