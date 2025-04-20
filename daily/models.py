@@ -23,7 +23,7 @@ class DailyChallenge(Puzzle):
 
     daily_date = models.DateField(
         default=timezone.now,
-        unique=False, 
+        unique=True, 
         verbose_name='Challenge Date'
         )
 

@@ -2,8 +2,10 @@ import datetime
 from django.shortcuts import render, redirect
 from django.db.models import QuerySet
 from django.views import View
+from django.core import management
 from django.contrib import messages
 from django.http import JsonResponse
+from django.contrib.admin.views.decorators import staff_member_required
 
 from .models import DailyChallenge
 from .forms import CreateDailyPuzzleForm
@@ -161,3 +163,12 @@ class SolveDailyPuzzleView(View):
                 'questions': questions,
                 'date': today,
             })
+
+@staff_member_required
+def trigger_daily_challenge(request):
+    """Admin-only view to manually trigger daily challenge generation"""
+    try:
+        management.call_command('generate_daily_challenge')
+        return JsonResponse({"status": "success", "message": "Daily challenge generated"})
+    except Exception as e:
+        return JsonResponse({"status": "error", "message": str(e)})

@@ -1,0 +1,46 @@
+I'd like you to create a fun trivia challenge for a friend with the following structure:
+
+- Choose a theme that connects all three questions.
+- Set a difficulty level: one of "Easy", "Medium", "Hard", or "Expert".
+- Write exactly three questions, each containing:
+  - A clear trivia question
+  - A one-word answer
+  - A hint — this must be a single word, no longer than 10 characters
+
+Also include a congratulatory message shown once the trivia is completed. Keep this message:
+- Related to the theme
+- Casual (not too corporate, not overly whimsical)
+- No more than 144 characters long
+
+Finally, return everything in this JSON format:
+
+```json
+{
+  "message": "The message after solving the trivia",
+  "theme": "The theme of the questions",
+  "difficulty": "Easy | Medium | Hard | Expert",
+  "questions": [
+    {
+      "question": "The question text",
+      "answer": "OneWordAnswer",
+      "hint": "HintWord"
+    },
+    {
+      "question": "The question text",
+      "answer": "OneWordAnswer",
+      "hint": "HintWord"
+    },
+    {
+      "question": "The question text",
+      "answer": "OneWordAnswer",
+      "hint": "HintWord"
+    }
+  ]
+}
+```
+
+Inputs to use:
+- Theme: "<<REPLACE_THEME>>"
+- Difficulty: "<<REPLACE_DIFFICULTY>>"
+
+Make sure the hint for each question is a single word with a maximum of 10 characters. And dont forget to fill up the answer.
