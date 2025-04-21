@@ -39,6 +39,7 @@
             <li><a href="{% url 'home' %}" class="nav-link">Home</a></li>
             <li><a href="{% url 'puzzle:create_puzzle' %}" class="nav-link">Create Puzzle</a></li>
             <li><a href="{% url 'daily:solve_daily_puzzle' %}" class="nav-link">Daily Puzzle</a></li>
+            <li><a href="{% url 'daily:daily_leaderboard' %}" class="nav-link">Leaderboard</a></li>
             {% if user.is_superuser%}
                 <li><a href="{% url 'daily:daily_challenge_create' %}" class="nav-link">Create Daily Puzzle</a></li>
             {% endif %}
@@ -68,6 +69,7 @@
         <div class="footer-container">
             <div class="footer-row">
                 <div class="footer-column">
+                    <h4>Social Links</h4>
                     <div class="social-links">
                         <a href="https://github.com/mlziade" target="_blank" class="social-link"><i class="bi bi-github"></i></a>
                         <a href="https://www.linkedin.com/in/mlziade/" target="_blank" class="social-link"><i class="bi bi-linkedin"></i></a>
@@ -78,9 +80,9 @@
                 
                 <div class="footer-column">
                     <h4>About</h4>
-                    <p>Create and solve encrypted puzzles with friends and other people!</p>
-                    <p>Developed by <a href="https://mlziade.com.br" target="_blank" class="animated-link">mlziade</a>.</p>
-                    <p>Reach me at: <a href="mailto:keycrypt@mlziade.com.br" class="animated-link">keycrypt@mlziade.com.br</a></p>
+                    <p>Create and solve encrypted puzzles with friends and others!</p>
+                    <p>Developed by <a href="https://mlziade.com.br" target="_blank" class="animated-link">mlziade</a></p>
+                    <p>Reach me at <a href="mailto:keycrypt@mlziade.com.br" class="animated-link">keycrypt@mlziade.com.br</a></p>
                 </div>
                 
                 <div class="footer-column">
@@ -88,6 +90,8 @@
                     <ul class="footer-links">
                         <li><a href="{% url 'home' %}">Home</a></li>
                         <li><a href="{% url 'puzzle:create_puzzle' %}">Create Puzzle</a></li>
+                        <li><a href="{% url 'daily:solve_daily_puzzle' %}">Daily Puzzle</a></li>
+                        <li><a href="{% url 'daily:daily_leaderboard' %}">Leaderboard</a></li>
                     </ul>
                 </div>
             </div>
