@@ -1,6 +1,7 @@
 import datetime
 from django.shortcuts import render, redirect
 from django.db.models import QuerySet
+from django.db import models
 from django.views import View
 from django.core import management
 from django.contrib import messages
@@ -13,6 +14,8 @@ from .forms import CreateDailyPuzzleForm
 from puzzle.models import PuzzleQuestion, PuzzleQuestionHint, PuzzleSolved
 from puzzle.forms import CreatePuzzleQuestionsFormSet
 from puzzle.services import encrypt_message, decrypt_message
+
+from users.models import Profile
 
 class CreateDailyPuzzleView(View):
     def get(self, request):
@@ -163,6 +166,48 @@ class SolveDailyPuzzleView(View):
                 'questions': questions,
                 'date': today,
             })
+
+class DailyLeaderboardView(View):
+    """
+    View to display the leaderboard for daily challenges.
+    """
+    def get(self, request):
+        # Get the current date
+        today = datetime.date.today()
+
+        # Fetch the last 7 daily challenges
+        daily_challenges: QuerySet[DailyChallenge] = DailyChallenge.objects.filter(
+            daily_date__gte=today - datetime.timedelta(days=7)
+        ).order_by('-daily_date')
+
+        # Fetch the count of solved daily challenges for each user in the last 7 days
+        leaderboard_data = (
+            Profile.objects.filter(
+                solved_puzzles__puzzle__in=daily_challenges
+            )
+            .annotate(
+                solved_count=models.Count('solved_puzzles'),
+                fastest_solve=models.Min('solved_puzzles__solved_at')
+            )
+            .order_by('-solved_count', 'fastest_solve')
+        )
+
+        # Enhance challenge objects with solve_count data
+        enhanced_challenges = []
+        for challenge in daily_challenges:
+            solve_count = PuzzleSolved.objects.filter(puzzle=challenge).count()
+            enhanced_challenges.append({
+                'challenge': challenge,
+                'solve_count': solve_count,
+                'is_today': challenge.daily_date == today
+            })
+
+        # Render the leaderboard template
+        return render(request, 'daily_leaderboard.html', {
+            'leaderboard_data': leaderboard_data,
+            'daily_challenges': enhanced_challenges,
+            'today': today,
+        })
 
 @staff_member_required
 def trigger_daily_challenge(request):

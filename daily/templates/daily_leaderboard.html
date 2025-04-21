@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Daily Challenges Leaderboard
+{% endblock %}
+
+{% block extra_css %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'daily_leaderboard.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+{% endblock %}
+
+{% block content %}
+    <div class="leaderboard-container">
+        <h2 class="text-center mb-4">
+            Daily Challenge Leaderboard
+            <span class="leaderboard-subtitle">Past 7 Days</span>
+        </h2>
+
+        {% load django_bootstrap5 %}
+        {% bootstrap_messages %}
+
+        <div class="row">
+            <!-- Main Leaderboard -->
+            <div class="col-lg-7">
+                <div class="card leaderboard-card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h3 class="mb-0"><i class="bi bi-trophy"></i> Top Solvers</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-dark table-hover">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Rank</th>
+                                        <th scope="col">User</th>
+                                        <th scope="col">Puzzles Solved</th>
+                                        <th scope="col">Fastest Solve</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for user in leaderboard_data %}
+                                        <tr class="{% if forloop.counter <= 3 %}top-rank rank-{{ forloop.counter }}{% endif %}">
+                                            <td>{{ forloop.counter }}</td>
+                                            <td>{{ user.username }}</td>
+                                            <td>{{ user.solved_count }}</td>
+                                            <td>{{ user.fastest_solve|time:"H:i:s" }}</td>
+                                        </tr>
+                                    {% empty %}
+                                        <tr>
+                                            <td colspan="4" class="text-center">No solvers yet in the past week.</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Challenge Stats -->
+            <div class="col-lg-5">
+                <div class="card challenge-stats-card">
+                    <div class="card-header">
+                        <h3 class="mb-0"><i class="bi bi-calendar-check"></i> Recent Challenges</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="list-group">
+                            {% for item in daily_challenges %}
+                                <div class="list-group-item challenge-stat-item">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h5 class="mb-1">{{ item.challenge.theme|default:"Untitled Challenge" }}</h5>
+                                        <small>{{ item.challenge.daily_date|date:"M d, Y" }}</small>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <p class="mb-0">
+                                            <i class="bi bi-people-fill"></i> 
+                                            {{ item.solve_count }} solvers
+                                        </p>
+                                        {% if item.is_today %}
+                                            <span class="badge bg-success">Today's Challenge</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% empty %}
+                                <div class="list-group-item">
+                                    <p class="text-center mb-0">No challenges in the past week.</p>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="daily-leaderboard-info mt-4">
+            <div class="alert alert-info" role="alert">
+                <i class="bi bi-info-circle me-2"></i>
+                The leaderboard shows the top solvers from the past 7 days. Solve today's puzzle to climb the ranks!
+                <div class="mt-2">
+                    <a href="{% url 'daily:solve_daily_puzzle' %}" class="btn btn-primary">
+                        <i class="bi bi-puzzle-fill me-2"></i>Solve Today's Challenge
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

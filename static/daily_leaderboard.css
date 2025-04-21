@@ -1,0 +1,102 @@
+.leaderboard-container {
+    margin-top: 1rem;
+    padding: 0.5rem;
+}
+
+.leaderboard-subtitle {
+    font-size: 0.9rem;
+    color: #9de0f6;
+    display: block;
+    margin-top: 0.5rem;
+    font-weight: 400;
+}
+
+.leaderboard-card, .challenge-stats-card {
+    border: 1px solid #333;
+    margin-bottom: 1.5rem;
+    background-color: #242424;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.card-header {
+    background-color: #1c1c1c;
+    border-bottom: 1px solid #333;
+    color: #e1e1e1;
+}
+
+table.table-dark {
+    background-color: #242424;
+    color: #e1e1e1;
+}
+
+.table-dark thead th {
+    background-color: #1c1c1c;
+    border-color: #333;
+    color: #9de0f6;
+}
+
+.table-dark tbody tr {
+    border-color: #333;
+    transition: background-color 0.3s;
+}
+
+.table-dark tbody tr:hover {
+    background-color: #2a2a2a;
+}
+
+.top-rank {
+    font-weight: bold;
+}
+
+.rank-1 {
+    color: gold;
+}
+
+.rank-2 {
+    color: silver;
+}
+
+.rank-3 {
+    color: #cd7f32; /* bronze */
+}
+
+.challenge-stat-item {
+    background-color: #2c2c2c;
+    border-color: #333;
+    margin-bottom: 0.5rem;
+    color: #e1e1e1;
+    transition: transform 0.2s;
+}
+
+.challenge-stat-item:hover {
+    transform: translateY(-2px);
+    background-color: #323232;
+}
+
+.challenge-stat-item h5 {
+    color: #9de0f6;
+}
+
+.daily-leaderboard-info {
+    margin-top: 2rem;
+    text-align: center;
+}
+
+.badge {
+    font-size: 0.75rem;
+    padding: 0.35em 0.65em;
+}
+
+@media (max-width: 992px) {
+    .leaderboard-container {
+        padding: 0.25rem;
+    }
+    
+    h2 {
+        font-size: 1.75rem;
+    }
+    
+    h3 {
+        font-size: 1.4rem;
+    }
+}
