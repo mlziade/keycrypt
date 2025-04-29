@@ -129,7 +129,7 @@ class Command(BaseCommand):
 
         challenge_data = call_ollama_server(
             prompt=prompt,
-            model=os.environ.get("OLLAMA_MODEL", "tinyllama:1.1b")
+            model=os.environ.get("OLLAMA_MODEL", "llama3.2:1b")
         )
 
         if not challenge_data:
