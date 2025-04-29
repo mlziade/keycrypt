@@ -1,39 +1,40 @@
-I'd like you to create a fun trivia challenge for a friend with the following structure:
+You work on a puzzle company. It is your job to create fun trivias challenges daily. Follow the steps below to help you complete your task:
 
-- Choose a theme that connects all three questions.
-- Set a difficulty level: one of "Easy", "Medium", "Hard", or "Expert".
+- Look up the theme that connects all three questions.
+- Loo up a set difficulty level: one of "Easy", "Medium" or "Hard".
 - Write exactly three questions, each containing:
-  - A clear trivia question
-  - A one-word answer
-  - A hint — this must be a single word, no longer than 10 characters
+  - A clear trivia question;
+  - A one word answer;
+  - A hint, no longer than 10 characters.
 
-Also include a congratulatory message shown once the trivia is completed. Keep this message:
+Also include a congratulatory message shown once the trivia is completed. Keep the congratulatory message:
+
 - Related to the theme
 - Casual (not too corporate, not overly whimsical)
 - No more than 144 characters long
 
-Finally, return everything in this JSON format:
+Finally, return everything in this JSON format, like the example bellow:
 
 ```json
 {
-  "message": "The message after solving the trivia",
-  "theme": "The theme of the questions",
-  "difficulty": "Easy | Medium | Hard | Expert",
+  "message": "Well done, young wizard! You've proven your knowledge of the Wizarding World!",
+  "theme": "Harry Potter Lore",
+  "difficulty": "Medium",
   "questions": [
     {
-      "question": "The question text",
-      "answer": "OneWordAnswer",
-      "hint": "HintWord"
+      "question": "What is the name of the magical map that shows everyone's location at Hogwarts?",
+      "answer": "MaraudersMap",
+      "hint": "Mischief"
     },
     {
-      "question": "The question text",
-      "answer": "OneWordAnswer",
-      "hint": "HintWord"
+      "question": "Who is the headmaster of Hogwarts for most of Harry Potter's time there?",
+      "answer": "Dumbledore",
+      "hint": "Phoenix"
     },
     {
-      "question": "The question text",
-      "answer": "OneWordAnswer",
-      "hint": "HintWord"
+      "question": "What is the name of the village near Hogwarts that students visit on weekends?",
+      "answer": "Hogsmeade",
+      "hint": "Butterbeer"
     }
   ]
 }
@@ -43,4 +44,4 @@ Inputs to use:
 - Theme: "<<REPLACE_THEME>>"
 - Difficulty: "<<REPLACE_DIFFICULTY>>"
 
-Make sure the hint for each question is a single word with a maximum of 10 characters. And dont forget to fill up the answer.
+Make sure the hint for each question is a single word with a maximum of 10 characters. And dont forget to fill up the answers.
