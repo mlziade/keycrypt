@@ -1,3 +1,5 @@
+/* ...existing code... */
+
 .daily-challenge-info {
     margin-top: 2rem;
     padding: 0.5rem;
@@ -5,4 +7,15 @@
 
 .puzzle-id {
     color: #9de0f6;
+}
+
+/* Add warning color for "close enough" messages */
+.text-warning {
+    color: #fd7e14 !important; /* Orange color */
+}
+
+.btn-warning {
+    background-color: #fd7e14;
+    border-color: #fd7e14;
+    color: white;
 }
