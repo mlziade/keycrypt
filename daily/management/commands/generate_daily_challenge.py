@@ -91,6 +91,11 @@ class Command(BaseCommand):
         # Get the current date
         today = date.today()
 
+        # Check if a challenge already exists for today
+        if DailyChallenge.objects.filter(daily_date=today).exists():
+            self.stdout.write(self.style.WARNING(f"Daily challenge for {today} already exists."))
+            return
+
         theme = trivia_themes[random.randint(0, len(trivia_themes) - 1)]
         difficulty = difficulty_levels[random.randint(0, len(difficulty_levels) - 1)]
 
