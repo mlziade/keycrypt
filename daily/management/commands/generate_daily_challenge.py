@@ -5,9 +5,12 @@ import random
 import requests
 from datetime import datetime, date
 from django.core.management.base import BaseCommand
+from dotenv import load_dotenv
 
 from daily.models import DailyChallenge
 from puzzle.models import PuzzleQuestion, PuzzleQuestionHint
+
+load_dotenv()
 
 trivia_themes: list[str] = [
     "Marvel Cinematic Universe",
@@ -126,7 +129,7 @@ class Command(BaseCommand):
 
         challenge_data = call_ollama_server(
             prompt=prompt,
-            model="gemma3:1b"
+            model=os.environ.get("OLLAMA_MODEL", "tinyllama:1.1b")
         )
 
         if not challenge_data:
