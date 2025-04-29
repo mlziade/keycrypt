@@ -133,16 +133,9 @@ class Command(BaseCommand):
             self.stdout.write(self.style.ERROR("Failed to get response from Ollama server"))
             return
 
-        # Extract JSON from the response field (which contains markdown)
-        json_str = extract_json_from_markdown(challenge_data.get('response', ''))
-        
-        if not json_str:
-            self.stdout.write(self.style.ERROR("Could not extract JSON from the response"))
-            return
-
         try:
-            # Parse the JSON data
-            data = json.loads(json_str)
+            # Extract JSON from the response field (which contains markdown)
+            data = extract_json_from_markdown(challenge_data.get('response', ''))
             self.stdout.write(f"Challenge for {today} parsed successfully")
             
             # Create a new DailyChallenge
@@ -199,6 +192,8 @@ class Command(BaseCommand):
                 f"Daily challenge for {today} created successfully with theme '{data['theme']}'"
             ))
             
+        except ValueError as e:
+            self.stdout.write(self.style.ERROR(f"Error extracting JSON: {e}"))
         except json.JSONDecodeError:
             self.stdout.write(self.style.ERROR("Invalid JSON format in the response"))
         except KeyError as e:
