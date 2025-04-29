@@ -74,7 +74,7 @@ def call_ollama_server(prompt, model):
     }
 
     try:
-        response = requests.post(url, headers=headers, json=data)
+        response = requests.post(url, headers=headers, json=data, timeout=300) # 5 minutes timeout
         response.raise_for_status()
         return response.json()
     except requests.exceptions.Timeout:
