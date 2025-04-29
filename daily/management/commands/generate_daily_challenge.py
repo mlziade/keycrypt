@@ -73,12 +73,15 @@ def call_ollama_server(prompt, model):
         "stream": False,
     }
 
-    response = requests.post(url, headers=headers, json=data)
-    if response.status_code == 200:
-        print(f"Response from server: {response.json()}")
+    try:
+        response = requests.post(url, headers=headers, json=data)
+        response.raise_for_status()
         return response.json()
-    else:
-        print(f"Error: {response.status_code} - {response.text}")
+    except requests.exceptions.Timeout:
+        print("Error: The request to the Ollama server timed out.")
+        return None
+    except requests.exceptions.RequestException as e:
+        print(f"Error: Failed to connect to the Ollama server: {e}")
         return None
 
 class Command(BaseCommand):
