@@ -36,14 +36,13 @@ trivia_themes: list[str] = [
     "Fantasy Worlds",
 ]
 
-
 difficulty_levels: list[str] = [
     "Easy",
     "Medium",
     "Hard"
 ]
 
-def extract_json_from_markdown(text) -> str | None:
+def extract_json_from_markdown(text) -> dict:
     """
     Extract JSON data from markdown code blocks in the LLM response.
     ```json
@@ -52,16 +51,36 @@ def extract_json_from_markdown(text) -> str | None:
     """
     pattern = r'```json\s*(.*?)```'
     matches = re.findall(pattern, text, re.DOTALL)
-    return matches[0] if matches else None
+    
+    if not matches:
+        raise ValueError("No JSON code block found in the response")
+    
+    try:
+        return json.loads(matches[0])
+    except json.JSONDecodeError as e:
+        raise json.JSONDecodeError(f"Invalid JSON format: {e}", matches[0], e.pos)
 
 def read_prompt_from_file() -> str:
+    """
+    Read the daily challenge prompt from a file.
+    The file should be located in the same directory as this script.
+    """
     current_dir = os.path.dirname(os.path.abspath(__file__))
     file_path = os.path.join(current_dir, 'daily_challenge_prompt.txt')
     
-    with open(file_path, 'r') as file:
-        return file.read()
+    try:
+        with open(file_path, 'r') as file:
+            return file.read()
+    except FileNotFoundError:
+        raise FileNotFoundError(f"Prompt template not found at: {file_path}")
+    except IOError as e:
+        raise IOError(f"Error reading prompt template: {e}")
 
 def call_ollama_server(prompt, model):
+    """
+    Call the Ollama server to generate a daily challenge.
+    """
+
     url = "http://localhost:11434/api/generate"
     headers = {
         "Content-Type": "application/json",
