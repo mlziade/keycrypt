@@ -6,13 +6,15 @@ class CreatePuzzleForm(forms.ModelForm):
     message = forms.CharField(
         required=True,
         widget=forms.Textarea(attrs={'rows': 5, 'placeholder': 'Enter the message to be encrypted/hidden'}),
-        label="Message/Content",
+        label="Message",
+        help_text="Enter the message you want to encrypt and hide."
     )
 
     self_destruct_at = forms.DateTimeField(
         required=False,
         widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}),
         label="Self-Destruct At (Optional)",
+        help_text="Set an optional date and time for the puzzle to be automatically deleted."
     )
 
     class Meta:

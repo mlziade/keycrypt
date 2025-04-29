@@ -21,9 +21,9 @@ class CreateDailyPuzzleForm(CreatePuzzleForm):
     )
 
     theme = forms.CharField(
-        required=False,
+        required=True,
         widget=forms.TextInput(attrs={'placeholder': 'Enter an optional theme'}),
-        label="Theme (Optional)",
+        label="Theme",
         help_text="You can provide an optional theme for the challenge."
     )
 
@@ -48,3 +48,5 @@ class CreateDailyPuzzleForm(CreatePuzzleForm):
             required=False,
             initial=None,
         )
+        self.fields['message'].widget.attrs['title'] = self.fields['message'].help_text
+        self.fields['self_destruct_at'].widget.attrs['title'] = self.fields['self_destruct_at'].help_text
