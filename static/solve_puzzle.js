@@ -73,13 +73,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     if (data.status === 'success') {
                         // Correct answer
-                        this.classList.remove('btn-outline-secondary', 'btn-danger');
+                        this.classList.remove('btn-outline-secondary', 'btn-danger', 'btn-warning');
                         this.classList.add('btn-success');
                         feedbackDiv.textContent = "Correct answer!";
                         feedbackDiv.className = "feedback-message mt-2 text-success";
+                    } else if (data.status === 'close') {
+                        // Close answer
+                        this.classList.remove('btn-outline-secondary', 'btn-danger', 'btn-success');
+                        this.classList.add('btn-warning');
+                        feedbackDiv.textContent = "Close enough! Almost there...";
+                        feedbackDiv.className = "feedback-message mt-2 text-warning";
                     } else {
                         // Wrong answer
-                        this.classList.remove('btn-outline-secondary', 'btn-success');
+                        this.classList.remove('btn-outline-secondary', 'btn-success', 'btn-warning');
                         this.classList.add('btn-danger');
                         feedbackDiv.textContent = "Incorrect answer. Try again.";
                         feedbackDiv.className = "feedback-message mt-2 text-danger";

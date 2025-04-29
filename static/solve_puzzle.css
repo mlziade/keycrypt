@@ -132,6 +132,12 @@
     color: white;
 }
 
+.btn-warning {
+    background-color: #fd7e14; /* Orange */
+    border-color: #fd7e14;
+    color: white;
+}
+
 .feedback-message {
     font-size: 0.875rem;
     font-weight: 500;
@@ -148,7 +154,7 @@
 }
 
 .text-warning {
-    color: #ffc107 !important;
+    color: #fd7e14 !important;
 }
 
 .alert-info {

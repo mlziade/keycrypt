@@ -229,7 +229,7 @@ def test_question(request, puzzle_id, question_id):
                 })
             elif distance <= 3:
                 return JsonResponse({
-                    'status': 'error',
+                    'status': 'close',
                     'message': "Close, but not quite right..."
                 })
             else:
