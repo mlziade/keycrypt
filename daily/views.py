@@ -40,7 +40,7 @@ class CreateDailyPuzzleView(View):
 
             if len(question_formset) == 0:
                 messages.error(request, "Please add at least one question.")
-                return render(request, 'create_puzzle.html', {
+                return render(request, 'admin_create_daily.html', {
                     'form': form,
                     'question_formset': question_formset,
                 })
@@ -62,7 +62,6 @@ class CreateDailyPuzzleView(View):
                         solutions.append(solution_text)
                         question.save()
                         
-                        # Save hint if provided
                         if hint_text:
                             hint = PuzzleQuestionHint(
                                 question=question,
@@ -85,6 +84,7 @@ class CreateDailyPuzzleView(View):
 
             return redirect('daily:solve_daily_puzzle')
         else:
+            messages.error(request, "Please correct the errors below.")
             return render(request, 'admin_create_daily.html', {
                 'form': form,
                 'question_formset': question_formset,

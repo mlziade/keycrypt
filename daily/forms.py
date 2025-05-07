@@ -48,5 +48,8 @@ class CreateDailyPuzzleForm(CreatePuzzleForm):
             required=False,
             initial=None,
         )
+
         self.fields['message'].widget.attrs['title'] = self.fields['message'].help_text
-        self.fields['self_destruct_at'].widget.attrs['title'] = self.fields['self_destruct_at'].help_text
+        self.fields['difficulty'].widget.attrs['title'] = self.fields['difficulty'].help_text
+        self.fields['daily_date'].widget.attrs['title'] = self.fields['daily_date'].help_text
+        self.fields['theme'].widget.attrs['title'] = self.fields['theme'].help_text
