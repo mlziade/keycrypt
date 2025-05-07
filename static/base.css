@@ -254,7 +254,7 @@ input, select, textarea {
 
 .animated-link {
     color: var(--light-color);
-    text-decoration: none;
+    text-decoration: none !important;
     font-weight: 500;
     transition: color 0.3s ease;
     padding: 0.2rem 0;
@@ -264,7 +264,7 @@ input, select, textarea {
 
 .animated-link:hover {
     color: var(--accent-color);
-    text-decoration: none;
+    text-decoration: none !important;
 }
 
 .animated-link::after {
