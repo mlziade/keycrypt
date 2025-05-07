@@ -25,9 +25,10 @@ class DailyChallenge(Puzzle):
         default=timezone.now,
         unique=True, 
         verbose_name='Challenge Date'
-        )
+    )
 
     theme = models.TextField(
+        max_length=50,
         null=True, 
         blank=True, 
         verbose_name='Challenge Theme'

@@ -1,13 +1,13 @@
 from django import forms
 from django.forms import formset_factory
-from .models import Puzzle
+from .models import Puzzle, validate_hint_words
 
 class CreatePuzzleForm(forms.ModelForm):
     message = forms.CharField(
         required=True,
-        widget=forms.Textarea(attrs={'rows': 5, 'placeholder': 'Enter the message to be encrypted/hidden'}),
+        widget=forms.Textarea(attrs={'rows': 5, 'placeholder': 'Enter the message to be encrypted/hidden (max 280 characters)'}),
         label="Message",
-        help_text="Enter the message you want to encrypt and hide."
+        help_text="Enter the message you want to encrypt and hide (maximum 280 characters)."
     )
 
     self_destruct_at = forms.DateTimeField(
@@ -38,6 +38,12 @@ class CreatePuzzleForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+    def clean_message(self):
+        message = self.cleaned_data.get('message')
+        if len(message) > 280:
+            raise forms.ValidationError("Message cannot exceed 280 characters.")
+        return message
+
 class CreatePuzzleQuestionsForm(forms.Form):
     question = forms.CharField(
         required=True,
@@ -47,32 +53,34 @@ class CreatePuzzleQuestionsForm(forms.Form):
 
     solution = forms.CharField(
         required=True,
-        widget=forms.TextInput(attrs={'placeholder': 'Enter the answer to the question'}),
+        widget=forms.TextInput(attrs={'placeholder': 'Enter the answer to the question (max 50 characters)'}),
         label="Solution",
-        help_text="The solution must be a single word."
+        help_text="The solution must be at most 50 characters."
     )
     
     hint = forms.CharField(
         required=False,
-        widget=forms.TextInput(attrs={'placeholder': 'Enter an optional hint (maximum 10 characters)'}),
+        widget=forms.TextInput(attrs={'placeholder': 'Enter an optional hint (max 2 words, 30 characters)'}),
         label="Hint (Optional)",
-        help_text="You can provide an optional hint for this question."
+        help_text="You can provide an optional hint for this question (maximum 2 words, 30 characters)."
     )
 
     def clean_solution(self):
         solution = self.cleaned_data.get('solution')
-        if ' ' in solution.strip():
-            raise forms.ValidationError("The solution must be a single word.")
+        if len(solution) > 50:
+            raise forms.ValidationError("The solution must be at most 50 characters long.")
         return solution
         
     def clean_hint(self):
         hint = self.cleaned_data.get('hint')
         if hint:
             hint = hint.strip()
-            if ' ' in hint:
-                raise forms.ValidationError("The hint must be a single word.")
-            if len(hint) > 10:
-                raise forms.ValidationError("The hint must be at most 10 characters long.")
+            if len(hint) > 30:
+                raise forms.ValidationError("The hint must be at most 30 characters long.")
+            
+            # Check word count
+            if len(hint.split()) > 2:
+                raise forms.ValidationError("The hint must be at most 2 words.")
         return hint
 
 CreatePuzzleQuestionsFormSet = formset_factory(CreatePuzzleQuestionsForm, extra=0, max_num=10, min_num=1)

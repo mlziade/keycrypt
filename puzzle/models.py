@@ -1,7 +1,13 @@
 import uuid
 from django.db import models
+from django.core.exceptions import ValidationError
 
 from users.models import Profile
+
+def validate_hint_words(value):
+    """Ensure hint is maximum 2 words"""
+    if len(value.split()) > 2:
+        raise ValidationError('Hint must be a maximum of 2 words.')
 
 class Puzzle(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -25,7 +31,7 @@ class PuzzleQuestion(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     puzzle = models.ForeignKey(Puzzle, null=False, on_delete=models.CASCADE, related_name='questions')
     question = models.TextField(null=False, blank=False)
-    solution = models.TextField(max_length=30, null=False, blank=False)
+    solution = models.TextField(max_length=50, null=False, blank=False)  # Increased from 30 to 50
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -53,7 +59,7 @@ class PuzzleReport(models.Model):
 class PuzzleQuestionHint(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     question = models.ForeignKey(PuzzleQuestion, null=False, on_delete=models.CASCADE, related_name='hints')
-    hint = models.TextField(null=False, blank=False)
+    hint = models.TextField(max_length=30, null=False, blank=False, validators=[validate_hint_words])
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
