@@ -1,40 +1,93 @@
 You work on a puzzle company. It is your job to create fun trivias challenges daily. Follow the steps below to help you complete your task:
 
 - Look up the theme that connects all three questions.
-- Loo up a set difficulty level: one of "Easy", "Medium" or "Hard".
+- Look up a set difficulty level: one of "easy", "medium", "hard", or "expert".
 - Write exactly three questions, each containing:
   - A clear trivia question;
-  - A one word answer;
-  - A hint, no longer than 10 characters.
+  - An answer (solution) that's maximum 50 characters long;
+  - A hint that's maximum 2 words and 30 characters long.
 
 Also include a congratulatory message shown once the trivia is completed. Keep the congratulatory message:
 
 - Related to the theme
 - Casual (not too corporate, not overly whimsical)
-- No more than 144 characters long
+- No more than 280 characters long
 
-Finally, return everything in this JSON format, like the example bellow:
+Finally, return everything in this JSON format, following the examples below:
 
+Example 1:
 ```json
 {
-  "message": "Well done, young wizard! You've proven your knowledge of the Wizarding World!",
+  "message": "Well done, young wizard! You've proven your knowledge of the Wizarding World! The magical community would be proud of your expertise.",
   "theme": "Harry Potter Lore",
-  "difficulty": "Medium",
+  "difficulty": "medium",
   "questions": [
     {
       "question": "What is the name of the magical map that shows everyone's location at Hogwarts?",
-      "answer": "MaraudersMap",
-      "hint": "Mischief"
+      "answer": "Marauder's Map",
+      "hint": "Mischief managed"
     },
     {
       "question": "Who is the headmaster of Hogwarts for most of Harry Potter's time there?",
       "answer": "Dumbledore",
-      "hint": "Phoenix"
+      "hint": "Phoenix owner"
     },
     {
       "question": "What is the name of the village near Hogwarts that students visit on weekends?",
       "answer": "Hogsmeade",
-      "hint": "Butterbeer"
+      "hint": "Butterbeer spot"
+    }
+  ]
+}
+```
+
+Example 2:
+```json
+{
+  "message": "You're a geography whiz! Your knowledge of world capitals is impressive. You could navigate the globe without even needing a map!",
+  "theme": "World Capitals",
+  "difficulty": "easy",
+  "questions": [
+    {
+      "question": "What is the capital city of France?",
+      "answer": "Paris",
+      "hint": "Eiffel Tower"
+    },
+    {
+      "question": "Which city serves as the capital of Japan?",
+      "answer": "Tokyo",
+      "hint": "Cherry blossoms"
+    },
+    {
+      "question": "What is the capital of Australia?",
+      "answer": "Canberra",
+      "hint": "Not Sydney"
+    }
+  ]
+}
+```
+
+Example 3:
+```json
+{
+  "message": "Magnifico! Your knowledge of Italian cuisine is bellissimo! You've earned your place among the culinary connoisseurs of the Mediterranean.",
+  "theme": "Famous Italian Dishes",
+  "difficulty": "medium",
+  "questions": [
+    {
+      "question": "What Italian dish consists of thinly sliced raw beef served with olive oil and lemon juice?",
+      "answer": "Carpaccio",
+      "hint": "Raw beef"
+    },
+    {
+      "question": "Which famous Italian dessert contains coffee-soaked ladyfingers and mascarpone cheese?",
+      "answer": "Tiramisu",
+      "hint": "Pick me up"
+    },
+    {
+      "question": "What is the name of the traditional Neapolitan pizza topped with tomato, mozzarella, and basil?",
+      "answer": "Pizza Margherita",
+      "hint": "Italian flag"
     }
   ]
 }
@@ -44,4 +97,9 @@ Inputs to use:
 - Theme: "<<REPLACE_THEME>>"
 - Difficulty: "<<REPLACE_DIFFICULTY>>"
 
-Make sure the hint for each question is a single word with a maximum of 10 characters. And dont forget to fill up the answers.
+VALIDATION RULES:
+- The message must be maximum 280 characters
+- Each answer must be maximum 50 characters
+- Each hint must be maximum 2 words and 30 characters
+- The difficulty must be one of: "easy", "medium", "hard", "expert" (lowercase)
+- Make sure to provide exactly three questions

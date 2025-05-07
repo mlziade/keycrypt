@@ -213,7 +213,7 @@ class DailyLeaderboardView(View):
 def trigger_daily_challenge(request):
     """Admin-only view to manually trigger daily challenge generation"""
     try:
-        management.call_command('generate_daily_challenge')
+        management.call_command('create_daily_llm_challenge')
         return JsonResponse({"status": "success", "message": "Daily challenge generated"})
     except Exception as e:
         return JsonResponse({"status": "error", "message": str(e)})

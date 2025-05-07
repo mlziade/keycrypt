@@ -6,16 +6,16 @@ logger = logging.getLogger(__name__)
 
 def start():
     """
-    Start the APScheduler to run the generate_daily_challenge command every hour.
+    Start the APScheduler to run the create_daily_llm_challenge command every hour.
     """
     scheduler = BackgroundScheduler()
 
     # Schedule job to run every hour
     scheduler.add_job(
-        lambda: management.call_command('generate_daily_challenge'),
+        lambda: management.call_command('create_daily_llm_challenge'),
         'interval',
         hours=1,
-        id='generate_daily_challenge_hourly',
+        id='create_daily_llm_challenge_hourly',
         replace_existing=True
     )
 
