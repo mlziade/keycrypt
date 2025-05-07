@@ -1,5 +1,11 @@
+import uuid
+from datetime import timedelta
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.utils.timezone import now
+
+def get_expiration_time():
+    return now() + timedelta(hours=1)
 
 class Profile(AbstractUser):
     ## AbstractUser Fields that are inhereted ## 
@@ -22,3 +28,13 @@ class Profile(AbstractUser):
 
     def __str__(self):
         return self.username
+
+class ResetPasswordLink(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    is_used = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    expires_at = models.DateTimeField(default=get_expiration_time)
+
+    def __str__(self):
+        return f"Reset link for {self.user.username}"

@@ -5,9 +5,10 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.contrib.auth.forms import AuthenticationForm
 from django.db.models import QuerySet
+from django.utils.timezone import now
 
-from .models import Profile
-from .forms import CreateUserForm
+from .models import Profile, ResetPasswordLink
+from .forms import CreateUserForm, RequestResetLinkForm, ResetPasswordForm
 
 from puzzle.models import Puzzle, PuzzleSolved
 from daily.models import DailyChallenge
@@ -73,3 +74,90 @@ class ProfileView(View):
             'solved_puzzles': solved_puzzles,
             'solved_daily_challenges': solved_daily_challenges,
         })
+
+class ResetPasswordView(View):
+    def get(self, request):
+        if request.user.is_authenticated:
+            return redirect('home')
+        
+        form: RequestResetLinkForm = RequestResetLinkForm()
+
+        return render(request, 'reset_password.html', {
+            'form': form,
+        })
+
+    def post(self, request):
+        if request.user.is_authenticated:
+            return redirect('home')
+        
+        form: RequestResetLinkForm = RequestResetLinkForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            try:
+                user: Profile = Profile.objects.get(email=email)
+                if not user:
+                    form.add_error('email', 'Email address not found.')
+                    return render(request, 'reset_password.html', {'form': form})
+                
+                reset_link: ResetPasswordLink = ResetPasswordLink.objects.create(user=user)
+
+                # Logic to send the reset link via email goes here
+                return redirect('users:login')
+            except Profile.DoesNotExist:
+                form.add_error('email', 'Email address not found.')
+        return redirect('home')
+
+class ChangePasswordView(View):
+    def get(self, request, reset_id):
+        if request.user.is_authenticated:
+            return redirect('home')
+        
+        # Check if the reset link is valid and not expired
+        reset_link: ResetPasswordLink = ResetPasswordLink.objects.get(id=reset_id)
+
+        if reset_link.expires_at < now():
+            return redirect('users:reset_password')
+    
+        if reset_link.is_used:
+            return redirect('users:reset_password')
+        
+        form: ResetPasswordForm = ResetPasswordForm()
+
+        return render(request, 'change_password.html', {
+            'reset_link': reset_link,
+            'form': ResetPasswordForm(),
+        })
+
+    def post(self, request, reset_id):
+        if request.user.is_authenticated:
+            return redirect('home')
+        
+        # Check if the reset link is valid and not expired
+        reset_link: ResetPasswordLink = ResetPasswordLink.objects.get(id=reset_id)
+
+        if reset_link.expires_at < now():
+            return redirect('users:reset_password')
+        
+        if reset_link.is_used:
+            return redirect('users:reset_password')
+        
+        try:
+            form: ResetPasswordForm = ResetPasswordForm(request.POST)
+            
+            if form.is_valid():
+                new_password = form.cleaned_data['new_password']
+                reset_link.user.set_password(new_password)
+                reset_link.is_used = True
+                reset_link.save()
+                
+                # Logic to send a confirmation email
+                return redirect('users:login')
+            else:
+                # If passwords don't match or other validation fails, form errors will be displayed
+                return render(request, 'change_password.html', {
+                    'reset_link': reset_link,
+                    'form': form,
+                })
+        except ResetPasswordLink.DoesNotExist:
+            # Handle the case where the reset link does not exist
+            return redirect('users:reset_password')
