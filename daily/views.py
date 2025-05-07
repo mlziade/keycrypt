@@ -7,6 +7,7 @@ from django.core import management
 from django.contrib import messages
 from django.http import JsonResponse
 from django.contrib.admin.views.decorators import staff_member_required
+from django.core.management import call_command
 
 from .models import DailyChallenge
 from .forms import CreateDailyPuzzleForm
@@ -212,8 +213,36 @@ class DailyLeaderboardView(View):
 @staff_member_required
 def trigger_daily_challenge(request):
     """Admin-only view to manually trigger daily challenge generation"""
+    
+    today = datetime.date.today()
+    
+    # Check if a daily challenge already exists for today
+    puzzle_exists_before = DailyChallenge.objects.filter(daily_date=today).exists()
+    
     try:
-        management.call_command('create_daily_llm_challenge')
-        return JsonResponse({"status": "success", "message": "Daily challenge generated"})
+        # Run the command
+        call_command('create_daily_llm_challenge')
+        
+        # Check if a daily challenge exists now
+        puzzle_exists_after = DailyChallenge.objects.filter(daily_date=today).exists()
+        
+        if puzzle_exists_before:
+            return JsonResponse({
+                "status": "error",
+                "message": f"Daily challenge for {today} already exists."
+            })
+        elif puzzle_exists_after:
+            return JsonResponse({
+                "status": "success",
+                "message": f"Daily challenge for {today} created successfully."
+            })
+        else:
+            return JsonResponse({
+                "status": "error",
+                "message": "Failed to create daily challenge. Check server logs for details."
+            })
     except Exception as e:
-        return JsonResponse({"status": "error", "message": str(e)})
+        return JsonResponse({
+            "status": "error", 
+            "message": f"Failed to generate daily challenge: {str(e)}"
+        })
