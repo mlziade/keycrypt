@@ -7,7 +7,7 @@ from django.utils.decorators import method_decorator
 from django.http import JsonResponse
 from django.utils.timezone import now
 
-from .forms import CreatePuzzleForm, CreatePuzzleQuestionsFormSet
+from .forms import CreatePuzzleForm, CreatePuzzleQuestionsFormSet, SolvePuzzleForm
 from .models import Puzzle, PuzzleQuestion, PuzzleSolved, PuzzleReport, PuzzleQuestionHint
 from .services import encrypt_message, decrypt_message
 
@@ -128,9 +128,11 @@ class SolvePuzzleView(View):
                 messages.error(request, "This puzzle has been deleted.")
                 return redirect('home')
 
+            form = SolvePuzzleForm(puzzle=puzzle)
             return render(request, 'solve_puzzle.html', {
                 'puzzle': puzzle,
                 'questions': questions,
+                'form': form,
             })
         except Puzzle.DoesNotExist:
             messages.error(request, "Puzzle not found.")
@@ -141,45 +143,65 @@ class SolvePuzzleView(View):
             puzzle: Puzzle = Puzzle.objects.get(id=puzzle_id)
             questions: QuerySet[PuzzleQuestion] = PuzzleQuestion.objects.filter(puzzle=puzzle)
 
-            # Get the answers from the form
-            user_answers = request.POST.getlist('answers')
-            puzzle_solutions = [question.solution for question in questions]
+            form = SolvePuzzleForm(puzzle=puzzle, data=request.POST)
+            
+            if form.is_valid():
+                all_correct = True
+                original_solutions = []
+                
+                # Check each answer against its specific question (case-insensitive)
+                for question in questions:
+                    field_name = f"answer_{question.id}"
+                    user_answer = form.cleaned_data[field_name]
+                    
+                    # Case-insensitive comparison for validation
+                    if user_answer.lower() != question.solution.lower():
+                        all_correct = False
+                        break
+                    
+                    # Keep original case for decryption
+                    original_solutions.append(question.solution)
+                
+                if all_correct:
+                    # Record the solved event
+                    solved_puzzle = PuzzleSolved(
+                        puzzle=puzzle,
+                        solved_by=request.user if request.user.is_authenticated else None
+                    )
+                    solved_puzzle.save()
 
-            # Check if the answers match the solutions
-            if sorted(user_answers) == sorted(puzzle_solutions):
-                # Added the solved event to the database
-                solved_puzzle = PuzzleSolved(
-                    puzzle=puzzle,
-                    solved_by=request.user if request.user.is_authenticated else None
-                )
-                solved_puzzle.save()
+                    # Update puzzle status if needed
+                    if not puzzle.is_solved and request.user != puzzle.created_by:
+                        puzzle.is_solved = True
+                        puzzle.save()
 
-                # If the puzzle hasnt been solved yet, set the is_solved field to True IF the user is not the creator
-                if not puzzle.is_solved and request.user != puzzle.created_by:
-                    puzzle.is_solved = True
-                    puzzle.save()
+                    # Use the original solutions (with original case) for decryption
+                    # Sort them as required by the decrypt_message function
+                    original_solutions.sort()
+                    decrypted_message = decrypt_message(
+                        password=original_solutions,
+                        ciphertext=puzzle.encrypted_message,
+                        nonce=puzzle.nonce,
+                        salt=puzzle.salt
+                    )
 
-                # Decrypt the message using the solutions as the password
-                puzzle_solutions.sort()
-                decrypted_message: str = decrypt_message(
-                    ciphertext=puzzle.encrypted_message,
-                    nonce=puzzle.nonce,
-                    salt=puzzle.salt,
-                    password=puzzle_solutions,
-                )
-
-                messages.success(request, "Congratulations! You've solved the puzzle.")
-                return render(request, 'solve_puzzle.html', {
-                    'puzzle': puzzle,
-                    'questions': questions,
-                    'decrypted_message': decrypted_message,
-                })
+                    messages.success(request, "Congratulations! You've solved the puzzle.")
+                    return render(request, 'solve_puzzle.html', {
+                        'puzzle': puzzle,
+                        'questions': questions,
+                        'form': form,
+                        'decrypted_message': decrypted_message,
+                    })
+                else:
+                    messages.error(request, "Incorrect answers. Please try again.")
             else:
-                messages.error(request, "Incorrect answers. Please try again.")
-                return render(request, 'solve_puzzle.html', {
-                    'puzzle': puzzle,
-                    'questions': questions,
-                })
+                messages.error(request, "Please provide all answers.")
+                
+            return render(request, 'solve_puzzle.html', {
+                'puzzle': puzzle,
+                'questions': questions,
+                'form': form,
+            })
         except Puzzle.DoesNotExist:
             messages.error(request, "Puzzle not found.")
             return redirect('home')
@@ -219,15 +241,19 @@ def test_question(request, puzzle_id, question_id):
 
         if request.method == 'POST':
             answer = request.POST.get('answer')
-
-            distance = levenshtein_distance(answer, question.solution)
-
-            if answer == question.solution:
+            
+            # Case-insensitive comparison
+            user_answer_lower = answer.lower() if answer else ""
+            solution_lower = question.solution.lower()
+            
+            # Case-insensitive exact match
+            if user_answer_lower == solution_lower:
                 return JsonResponse({
                     'status': 'success',
                     'message': "Answer submitted."
                 })
-            elif distance <= 3:
+            # Calculate distance using lowercase versions for approximate match
+            elif levenshtein_distance(user_answer_lower, solution_lower) <= 3:
                 return JsonResponse({
                     'status': 'close',
                     'message': "Close, but not quite right..."

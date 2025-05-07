@@ -13,7 +13,7 @@ from .models import DailyChallenge
 from .forms import CreateDailyPuzzleForm
 
 from puzzle.models import PuzzleQuestion, PuzzleQuestionHint, PuzzleSolved
-from puzzle.forms import CreatePuzzleQuestionsFormSet
+from puzzle.forms import CreatePuzzleQuestionsFormSet, SolvePuzzleForm
 from puzzle.services import encrypt_message, decrypt_message
 
 from users.models import Profile
@@ -101,15 +101,19 @@ class SolveDailyPuzzleView(View):
         # Fetch the daily challenge for today
         daily_challenge: DailyChallenge = DailyChallenge.objects.filter(daily_date=today).first()
 
-        # Fetch the questions related to the daily challenge
-        questions: QuerySet[PuzzleQuestion] = PuzzleQuestion.objects.filter(puzzle=daily_challenge)
-
         if daily_challenge:
+            # Fetch the questions related to the daily challenge
+            questions: QuerySet[PuzzleQuestion] = PuzzleQuestion.objects.filter(puzzle=daily_challenge)
+            
+            # Create the form for the daily challenge
+            form = SolvePuzzleForm(puzzle=daily_challenge)
+
             # Render the puzzle solving page with the daily challenge
             return render(request, 'solve_daily_puzzle.html', {
                 'daily_challenge': daily_challenge,
                 'questions': questions,
                 'date': today,
+                'form': form,
             })
         else:
             # Handle the case where there is no daily challenge for today
@@ -130,43 +134,63 @@ class SolveDailyPuzzleView(View):
 
         # Fetch the questions related to the daily challenge
         questions: QuerySet[PuzzleQuestion] = PuzzleQuestion.objects.filter(puzzle=daily_challenge)
+        
+        # Create and validate the form
+        form = SolvePuzzleForm(puzzle=daily_challenge, data=request.POST)
+        
+        if form.is_valid():
+            all_correct = True
+            original_solutions = []
+            
+            # Check each answer against its specific question (case-insensitive)
+            for question in questions:
+                field_name = f"answer_{question.id}"
+                user_answer = form.cleaned_data[field_name]
+                
+                # Case-insensitive comparison for validation
+                if user_answer.lower() != question.solution.lower():
+                    all_correct = False
+                    break
+                
+                # Keep original case for decryption
+                original_solutions.append(question.solution)
+                
+            if all_correct:
+                # Add the solved event to the database
+                solved_daily_challenge = PuzzleSolved(
+                    puzzle=daily_challenge,
+                    solved_at=datetime.datetime.now(),
+                    solved_by=request.user if request.user.is_authenticated else None
+                )
+                solved_daily_challenge.save()
 
-        # Get the user's answers from the request
-        user_answers = request.POST.getlist('answers')
-        puzzle_solutions = [question.solution for question in questions]
-    
-        # Check if the user's answers match the puzzle solutions
-        if sorted(user_answers) == sorted(puzzle_solutions):
-            # Add the solved event to the database
-            solved_daily_challenge = PuzzleSolved(
-                puzzle=daily_challenge,
-                solved_at=datetime.datetime.now(),
-                solved_by=request.user
-            )
-            solved_daily_challenge.save()
+                # Decrypt the message using the original case solutions
+                original_solutions.sort()
+                decrypted_message = decrypt_message(
+                    ciphertext=daily_challenge.encrypted_message,
+                    nonce=daily_challenge.nonce,
+                    salt=daily_challenge.salt,
+                    password=original_solutions
+                )
 
-            # Decrypt the message using the solutions as the password
-            puzzle_solutions.sort()
-            decrypted_message: str = decrypt_message(
-                ciphertext=daily_challenge.encrypted_message,
-                nonce=daily_challenge.nonce,
-                salt=daily_challenge.salt,
-                password=puzzle_solutions
-            )
-
-            messages.success(request, "Congratulations! You've solved the daily puzzle!")
-            return render(request, 'solve_daily_puzzle.html', { 
-                'daily_challenge': daily_challenge,
-                'questions': questions,
-                'decrypted_message': decrypted_message,
-            })
+                messages.success(request, "Congratulations! You've solved the daily puzzle!")
+                return render(request, 'solve_daily_puzzle.html', { 
+                    'daily_challenge': daily_challenge,
+                    'questions': questions,
+                    'decrypted_message': decrypted_message,
+                    'form': form,
+                })
+            else:
+                messages.error(request, "Incorrect answers. Please try again.")
         else:
-            messages.error(request, "Incorrect answers. Please try again.")
-            return render(request, 'solve_daily_puzzle.html', {
-                'daily_challenge': daily_challenge,
-                'questions': questions,
-                'date': today,
-            })
+            messages.error(request, "Please provide all answers.")
+            
+        return render(request, 'solve_daily_puzzle.html', {
+            'daily_challenge': daily_challenge,
+            'questions': questions,
+            'date': today,
+            'form': form,
+        })
 
 class DailyLeaderboardView(View):
     """

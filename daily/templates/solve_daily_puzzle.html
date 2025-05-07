@@ -42,7 +42,9 @@
                                 <div class="question-answer-pair">
                                     <div class="question-text">{{ question.question }}</div>
                                     <div class="answer-input d-flex">
-                                        <input type="text" name="answers" 
+                                        {{ form.answer_question.id }}
+                                        <input type="text" 
+                                               name="answer_{{ question.id }}" 
                                                class="form-control me-2" 
                                                placeholder="Your answer" 
                                                id="answer-{{ question.id }}"

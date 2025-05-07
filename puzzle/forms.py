@@ -84,3 +84,21 @@ class CreatePuzzleQuestionsForm(forms.Form):
         return hint
 
 CreatePuzzleQuestionsFormSet = formset_factory(CreatePuzzleQuestionsForm, extra=0, max_num=10, min_num=1)
+
+class SolvePuzzleForm(forms.Form):
+    def __init__(self, puzzle, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        # Dynamically add a field for each question in the puzzle
+        questions = puzzle.questions.all()
+        for question in questions:
+            field_name = f"answer_{question.id}"
+            self.fields[field_name] = forms.CharField(
+                required=True,
+                widget=forms.TextInput(attrs={
+                    'class': 'form-control me-2',
+                    'placeholder': 'Your answer',
+                    'id': f"answer-{question.id}"
+                }),
+                label=""
+            )
