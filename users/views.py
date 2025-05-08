@@ -9,6 +9,7 @@ from django.utils.timezone import now
 
 from .models import Profile, ResetPasswordLink
 from .forms import CreateUserForm, RequestResetLinkForm, ResetPasswordForm
+from .send_email import send_reset_password_email
 
 from puzzle.models import Puzzle, PuzzleSolved
 from daily.models import DailyChallenge
@@ -101,7 +102,13 @@ class ResetPasswordView(View):
                 
                 reset_link: ResetPasswordLink = ResetPasswordLink.objects.create(user=user)
 
-                # Logic to send the reset link via email goes here
+                # send email with the reset link
+                send_reset_password_email(
+                    reset_id=reset_link.id,
+                    user_email=user.email,
+                    username=user.username
+                )
+
                 return redirect('users:login')
             except Profile.DoesNotExist:
                 form.add_error('email', 'Email address not found.')
