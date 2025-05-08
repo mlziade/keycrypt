@@ -154,6 +154,7 @@ class ChangePasswordView(View):
             if form.is_valid():
                 new_password = form.cleaned_data['new_password']
                 reset_link.user.set_password(new_password)
+                reset_link.user.save()
                 reset_link.is_used = True
                 reset_link.save()
                 
