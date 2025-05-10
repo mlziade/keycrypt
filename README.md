@@ -28,5 +28,3 @@ Access it on [keycrypt.mlziade.com.br](https://keycrypt.mlziade.com.br)!
 *   Uses Gunicorn as the WSGI production server.
 *   Nginx as the reverse proxy for handling incoming calls.
 *   Ollama as the LLM model provided on the machine.
-
-test ci/cd
