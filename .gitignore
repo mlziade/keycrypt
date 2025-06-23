@@ -10,8 +10,11 @@ wheels/
 .venv
 
 # Django database file
+db.sqlite3
 *.sqlite3
 
+# Environment variables
 .env
 
+# Static files served by Django
 staticfiles/
