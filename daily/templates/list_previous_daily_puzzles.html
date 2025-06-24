@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Previous Daily Challenges
+{% endblock %}
+
+{% block extra_css %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'list_previous_daily_puzzles.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+{% endblock %}
+
+{% block content %}
+    <div class="previous-puzzles-container">
+        <h2 class="text-center mb-4">
+            Previous Daily Challenges
+        </h2>
+
+        {% load django_bootstrap5 %}
+        {% bootstrap_messages %}
+
+        <!-- Items per page selector -->
+        <div class="pagination-controls mb-4">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <form method="get" class="d-flex align-items-center">
+                        <label for="per_page" class="form-label me-2 mb-0">Items per page:</label>
+                        <select name="per_page" id="per_page" class="form-select form-select-sm me-2" style="width: auto;" onchange="this.form.submit()">
+                            <option value="5" {% if items_per_page == 5 %}selected{% endif %}>5</option>
+                            <option value="10" {% if items_per_page == 10 %}selected{% endif %}>10</option>
+                            <option value="25" {% if items_per_page == 25 %}selected{% endif %}>25</option>
+                            <option value="50" {% if items_per_page == 50 %}selected{% endif %}>50</option>
+                        </select>
+                        {% if request.GET.page %}
+                            <input type="hidden" name="page" value="{{ request.GET.page }}">
+                        {% endif %}
+                    </form>
+                </div>
+                <div class="col-md-6 text-end">
+                    <small class="text-muted">
+                        Showing {{ page_obj.start_index }} to {{ page_obj.end_index }} of {{ page_obj.paginator.count }} challenges
+                    </small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Challenges list -->
+        <div class="challenges-grid">
+            {% for item in enhanced_challenges %}
+                <div class="challenge-card">
+                    <div class="challenge-header">
+                        <div class="challenge-date">
+                            <i class="bi bi-calendar3"></i>
+                            {{ item.challenge.daily_date|date:"M j, Y" }}
+                        </div>
+                        <div class="challenge-status">
+                            {% if item.is_solved %}
+                                <span class="badge bg-success">
+                                    <i class="bi bi-check-circle-fill"></i> Solved
+                                </span>
+                            {% else %}
+                                <span class="badge bg-secondary">
+                                    <i class="bi bi-circle"></i> Unsolved
+                                </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="challenge-content">
+                        <h5 class="challenge-title">
+                            {{ item.challenge.theme|default:"Daily Challenge" }}
+                        </h5>
+                        <div class="challenge-meta">
+                            <span class="difficulty-badge difficulty-{{ item.challenge.difficulty }}">
+                                {{ item.challenge.get_difficulty_display }}
+                            </span>
+                            <span class="solvers-count">
+                                <i class="bi bi-people-fill"></i> {{ item.solve_count }} solver{{ item.solve_count|pluralize }}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="challenge-actions">
+                        <div class="btn-group w-100" role="group">
+                            {% if not item.is_solved %}
+                                <a href="{% url 'daily:solve_previous_puzzle' item.challenge.id %}" 
+                                   class="btn btn-primary">
+                                    <i class="bi bi-play-circle"></i> Solve
+                                </a>
+                            {% else %}
+                                <a href="{% url 'daily:solve_previous_puzzle' item.challenge.id %}" 
+                                   class="btn btn-outline-primary">
+                                    <i class="bi bi-eye"></i> View
+                                </a>
+                            {% endif %}
+                            <a href="{% url 'daily:view_solution' item.challenge.id %}" 
+                               class="btn btn-outline-secondary">
+                                <i class="bi bi-lightbulb"></i> Solution
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="text-center mt-5">
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle me-2"></i>
+                        No previous daily challenges found.
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if page_obj.has_other_pages %}
+            <nav aria-label="Challenges pagination" class="mt-4">
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page=1&per_page={{ items_per_page }}">
+                                <i class="bi bi-chevron-double-left"></i>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}&per_page={{ items_per_page }}">
+                                <i class="bi bi-chevron-left"></i>
+                            </a>
+                        </li>
+                    {% endif %}
+
+                    {% for num in page_obj.paginator.page_range %}
+                        {% if page_obj.number == num %}
+                            <li class="page-item active">
+                                <span class="page-link">{{ num }}</span>
+                            </li>
+                        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ num }}&per_page={{ items_per_page }}">{{ num }}</a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}&per_page={{ items_per_page }}">
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}&per_page={{ items_per_page }}">
+                                <i class="bi bi-chevron-double-right"></i>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% endif %}
+
+        <!-- Info section -->
+        <div class="previous-puzzles-info mt-5">
+            <div class="alert alert-info" role="alert">
+                <i class="bi bi-info-circle me-2"></i>
+                Challenge yourself with past daily puzzles! Each challenge contains cryptographic questions leading to an encrypted message.                <div class="mt-3">
+                    <a href="{% url 'daily:solve_daily_puzzle' %}" class="btn btn-primary me-2">
+                        <i class="bi bi-calendar-day me-2"></i>Today's Challenge
+                    </a>
+                    <a href="{% url 'daily:daily_leaderboard' %}" class="btn btn-outline-primary">
+                        <i class="bi bi-trophy me-2"></i>Leaderboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'list_previous_daily_puzzles.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,216 @@
+/* List Previous Daily Puzzles Styles */
+
+.previous-puzzles-container {
+    margin-top: 1rem;
+    padding: 0.5rem;
+}
+
+.pagination-controls {
+    background-color: #242424;
+    border-radius: 8px;
+    padding: 1rem;
+    border: 1px solid #333;
+}
+
+.form-select {
+    background-color: #1c1c1c;
+    border-color: #333;
+    color: #e1e1e1;
+}
+
+.form-select:focus {
+    background-color: #1c1c1c;
+    border-color: #9de0f6;
+    color: #e1e1e1;
+    box-shadow: 0 0 0 0.2rem rgba(157, 224, 246, 0.25);
+}
+
+.challenges-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+.challenge-card {
+    background-color: #242424;
+    border: 1px solid #333;
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.challenge-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    border-color: #9de0f6;
+}
+
+.challenge-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #333;
+}
+
+.challenge-date {
+    color: #9de0f6;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.challenge-status .badge {
+    font-size: 0.75rem;
+    padding: 0.35em 0.65em;
+}
+
+.challenge-content {
+    margin-bottom: 1rem;
+}
+
+.challenge-title {
+    color: #e1e1e1;
+    margin-bottom: 0.75rem;
+    font-size: 1.1rem;
+}
+
+.challenge-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.difficulty-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.difficulty-easy {
+    background-color: #28a745;
+    color: white;
+}
+
+.difficulty-medium {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.difficulty-hard {
+    background-color: #fd7e14;
+    color: white;
+}
+
+.difficulty-expert {
+    background-color: #dc3545;
+    color: white;
+}
+
+.solvers-count {
+    color: #9de0f6;
+    font-size: 0.85rem;
+}
+
+.challenge-actions {
+    margin-top: 1rem;
+}
+
+.challenge-actions .btn-group .btn {
+    font-size: 0.875rem;
+    padding: 0.5rem 1rem;
+}
+
+/* Pagination styles */
+.pagination {
+    margin-top: 2rem;
+}
+
+.pagination .page-link {
+    background-color: #242424;
+    border-color: #333;
+    color: #9de0f6;
+    padding: 0.5rem 0.75rem;
+}
+
+.pagination .page-link:hover {
+    background-color: #2a2a2a;
+    border-color: #9de0f6;
+    color: #e1e1e1;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #9de0f6;
+    border-color: #9de0f6;
+    color: #1c1c1c;
+}
+
+.pagination .page-item.disabled .page-link {
+    background-color: #1c1c1c;
+    border-color: #333;
+    color: #666;
+}
+
+/* Info section */
+.previous-puzzles-info {
+    text-align: center;
+}
+
+.previous-puzzles-info .alert {
+    background-color: #242424;
+    border-color: #333;
+    color: #e1e1e1;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .challenges-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .challenge-card {
+        padding: 1rem;
+    }
+    
+    .challenge-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .challenge-meta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .pagination-controls .row {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .pagination-controls .col-md-6:last-child {
+        text-align: left !important;
+    }
+}
+
+@media (max-width: 576px) {
+    .previous-puzzles-container {
+        padding: 0.25rem;
+    }
+    
+    h2 {
+        font-size: 1.5rem;
+    }
+    
+    .pagination-controls {
+        padding: 0.75rem;
+    }
+}

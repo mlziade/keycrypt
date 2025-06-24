@@ -92,14 +92,16 @@
                 </div>
             </div>
         </div>
-
         <div class="daily-leaderboard-info mt-4">
             <div class="alert alert-info" role="alert">
                 <i class="bi bi-info-circle me-2"></i>
                 The leaderboard shows the top solvers from the past 7 days. Solve today's puzzle to climb the ranks!
                 <div class="mt-2">
-                    <a href="{% url 'daily:solve_daily_puzzle' %}" class="btn btn-primary">
+                    <a href="{% url 'daily:solve_daily_puzzle' %}" class="btn btn-primary me-2">
                         <i class="bi bi-puzzle-fill me-2"></i>Solve Today's Challenge
+                    </a>
+                    <a href="{% url 'daily:list_previous_puzzles' %}" class="btn btn-outline-primary">
+                        <i class="bi bi-list-ul me-2"></i>Previous Challenges
                     </a>
                 </div>
             </div>

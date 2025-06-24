@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Daily Challenge - {{ daily_challenge.daily_date|date:"F j, Y" }}
+{% endblock %}
+
+{% block extra_css %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'solve_puzzle.css' %}">
+    <link rel="stylesheet" href="{% static 'solve_daily_puzzle.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+{% endblock %}
+
+{% block content %}
+    <div class="solve-puzzle-container">
+        <div class="puzzle-header d-flex justify-content-between align-items-center mb-4">
+            <h2>
+                Daily Challenge
+                <span class="puzzle-id">{{ daily_challenge.daily_date|date:"F j, Y" }}</span>
+            </h2>
+            <div class="header-actions">
+                <a href="{% url 'daily:list_previous_puzzles' %}" class="btn btn-outline-secondary me-2">
+                    <i class="bi bi-arrow-left"></i> Back to List
+                </a>
+                <a href="{% url 'daily:view_solution' daily_challenge.id %}" class="btn btn-outline-info">
+                    <i class="bi bi-lightbulb"></i> View Solution
+                </a>
+            </div>
+        </div>
+
+        {% load django_bootstrap5 %}
+        {% bootstrap_messages %}
+
+        <!-- Challenge info -->
+        <div class="challenge-info mb-4">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="info-card">
+                        <h6><i class="bi bi-calendar3"></i> Challenge Date</h6>
+                        <p>{{ daily_challenge.daily_date|date:"F j, Y" }}</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="info-card">
+                        <h6><i class="bi bi-speedometer2"></i> Difficulty</h6>
+                        <span class="difficulty-badge difficulty-{{ daily_challenge.difficulty }}">
+                            {{ daily_challenge.get_difficulty_display }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if user_solved %}
+            <div class="alert alert-success" role="alert">
+                <i class="bi bi-check-circle-fill me-2"></i>
+                You have already solved this puzzle! The solution is revealed below.
+            </div>
+        {% endif %}
+
+        <div class="encrypted-message-container text-center mt-4 mb-4">
+            <p class="encrypted-message {% if not decrypted_message %}blurred{% endif %}">
+                {% if decrypted_message %}
+                    {{ decrypted_message }}
+                {% else %}
+                    {{ daily_challenge.encrypted_message }}
+                {% endif %}
+            </p>
+        </div>
+
+        {% if questions %}
+            <div class="questions-section mt-4">
+                <h3>Questions</h3>
+                {% if not user_solved %}
+                    <form method="post" action="{% url 'daily:solve_previous_puzzle' daily_challenge.id %}">
+                        {% csrf_token %}
+                        <ol class="list-group list-group-numbered">
+                            {% for question in questions %}
+                                <li class="list-group-item">
+                                    <div class="question-answer-pair">
+                                        <div class="question-text">{{ question.question }}</div>
+                                        <div class="answer-input d-flex">
+                                            <input type="text" 
+                                                   name="answer_{{ question.id }}" 
+                                                   class="form-control me-2" 
+                                                   placeholder="Your answer" 
+                                                   id="answer-{{ question.id }}"
+                                                   required>
+                                            <button type="button" 
+                                                    class="btn btn-outline-secondary test-answer-btn" 
+                                                    data-puzzle-id="{{ daily_challenge.id }}" 
+                                                    data-question-id="{{ question.id }}">
+                                                <i class="bi bi-check-circle"></i> Test
+                                            </button>
+                                        </div>
+                                        <div class="feedback-message mt-2" id="feedback-{{ question.id }}"></div>
+                                        
+                                        <!-- Hint button and container -->
+                                        <div class="hint-container mt-2">
+                                            <button type="button" class="btn btn-outline-warning hint-btn" 
+                                                    data-puzzle-id="{{ daily_challenge.id }}" 
+                                                    data-question-id="{{ question.id }}">
+                                                <i class="bi bi-lightbulb"></i> Show Hint
+                                            </button>
+                                            <div class="hint-text mt-2" id="hint-{{ question.id }}" style="display:none;"></div>
+                                        </div>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        </ol>
+                        <div class="mt-4 text-center">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-key-fill me-2"></i>Submit Answers
+                            </button>
+                        </div>
+                    </form>
+                {% else %}
+                    <!-- Read-only view for solved puzzles -->
+                    <ol class="list-group list-group-numbered">
+                        {% for question in questions %}
+                            <li class="list-group-item">
+                                <div class="question-answer-pair">
+                                    <div class="question-text">{{ question.question }}</div>
+                                    <div class="answer-display">
+                                        <div class="alert alert-success solution-display">
+                                            <i class="bi bi-check-circle-fill me-2"></i>
+                                            <strong>Solution:</strong> {{ question.solution }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ol>
+                {% endif %}
+            </div>
+        {% else %}
+            <div class="alert alert-info mt-4" role="alert">
+                This daily challenge does not have any associated questions.
+            </div>
+        {% endif %}
+        
+        <div class="daily-challenge-info mt-4">
+            <div class="alert alert-info" role="alert">
+                <i class="bi bi-info-circle me-2"></i>
+                This was the daily challenge for {{ daily_challenge.daily_date|date:"F j, Y" }}. Try solving more previous challenges!
+                <div class="mt-2">
+                    <a href="{% url 'daily:list_previous_puzzles' %}" class="btn btn-outline-primary me-2">
+                        <i class="bi bi-list-ul me-2"></i>More Previous Challenges
+                    </a>
+                    <a href="{% url 'daily:solve_daily_puzzle' %}" class="btn btn-primary">
+                        <i class="bi bi-calendar-day me-2"></i>Today's Challenge
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'solve_daily_puzzle.js' %}"></script>
+{% endblock %}
