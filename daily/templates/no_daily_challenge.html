@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}
-    No Daily Challenge Available
+    No Daily Challenge Available - {{ date|date:"F j, Y" }}
 {% endblock %}
 
 {% block extra_css %}
@@ -13,31 +13,201 @@
 
 {% block content %}
     <div class="solve-puzzle-container no-challenge-container">
-        <h2>
-            Daily Challenge
-            <span class="puzzle-id">{{ date|date:"F j, Y" }}</span>
-        </h2>
+        <div class="challenge-header">
+            <h2>
+                <i class="bi bi-calendar-day me-2"></i>Daily Challenge
+                <span class="puzzle-id">{{ date|date:"F j, Y" }}</span>
+            </h2>
+        </div>
 
         {% load django_bootstrap5 %}
         {% bootstrap_messages %}
 
-        <div class="no-challenge-message">
-            <div class="d-flex align-items-center">
-                <div class="icon-container me-2">
-                    <i class="bi bi-hourglass"></i>
+        <div class="no-challenge-card">
+            <div class="status-indicator">
+                <div class="status-icon">
+                    <i class="bi bi-hourglass-split"></i>
                 </div>
-                <h3>No Daily Challenge Available</h3>
+                <div class="status-pulse"></div>
             </div>
-            <p>We haven't released a daily challenge for today yet. Please try again later.</p>
-            <div class="next-update">
-                <i class="bi bi-clock"></i> Next update: Midnight
-            </div>
-        </div>
 
-        <div class="action-buttons">
-            <button class="btn btn-primary refresh-btn" onclick="location.reload()">
-                <i class="bi bi-arrow-repeat me-2"></i>Refresh Page
-            </button>
+            <div class="no-challenge-content">
+                <h3>No Challenge Available Yet</h3>
+                <p class="description">
+                    Today's puzzle is still being prepared! Our team creates fresh challenges daily with
+                    unique themes and varying difficulties. Check back soon for today's cryptographic adventure.
+                </p>
+                
+                <div class="availability-info">
+                    <div class="info-item">
+                        <i class="bi bi-clock-history"></i>
+                        <span>New challenges release at midnight</span>
+                    </div>
+                    <div class="info-item">
+                        <i class="bi bi-lightning-charge"></i>
+                        <span>Fresh puzzles every day</span>
+                    </div>
+                    <div class="info-item">
+                        <i class="bi bi-trophy"></i>
+                        <span>Compete on daily leaderboards</span>
+                    </div>
+                </div>
+
+                <div class="countdown-container" id="countdown-container">
+                    <h4>Next Challenge In:</h4>
+                    <div class="countdown-display" id="countdown-display">
+                        <div class="time-unit">
+                            <span class="time-value" id="hours">00</span>
+                            <span class="time-label">Hours</span>
+                        </div>
+                        <div class="time-separator">:</div>
+                        <div class="time-unit">
+                            <span class="time-value" id="minutes">00</span>
+                            <span class="time-label">Minutes</span>
+                        </div>
+                        <div class="time-separator">:</div>
+                        <div class="time-unit">
+                            <span class="time-value" id="seconds">00</span>
+                            <span class="time-label">Seconds</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-section">
+                <div class="primary-actions">
+                    <button class="btn btn-primary refresh-btn" id="refresh-btn">
+                        <i class="bi bi-arrow-repeat me-2"></i>
+                        <span class="btn-text">Check Again</span>
+                    </button>
+                    <a href="{% url 'daily:list_previous_puzzles' %}" class="btn btn-outline-secondary">
+                        <i class="bi bi-archive me-2"></i>Previous Challenges
+                    </a>
+                </div>
+                
+                <div class="secondary-actions">
+                    <a href="{% url 'daily:daily_leaderboard' %}" class="action-link">
+                        <i class="bi bi-trophy"></i>
+                        <span>View Leaderboard</span>
+                    </a>
+                    <a href="{% url 'puzzle:create_puzzle' %}" class="action-link">
+                        <i class="bi bi-plus-circle"></i>
+                        <span>Create Your Own</span>
+                    </a>
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'users:profile' %}" class="action-link">
+                            <i class="bi bi-person-circle"></i>
+                            <span>My Profile</span>
+                        </a>
+                    {% endif %}
+                </div>            </div>
         </div>
     </div>
+{% endblock %}
+
+{% block extra_js %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Auto-refresh functionality
+            const refreshBtn = document.getElementById('refresh-btn');
+            const countdownDisplay = document.getElementById('countdown-display');
+            let autoRefreshEnabled = true;
+            let refreshInterval;
+
+            // Countdown to next midnight
+            function updateCountdown() {
+                const now = new Date();
+                const tomorrow = new Date(now);
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                tomorrow.setHours(0, 0, 0, 0);
+                
+                const timeLeft = tomorrow - now;
+                
+                if (timeLeft <= 0) {
+                    // It's past midnight, refresh the page
+                    location.reload();
+                    return;
+                }
+                
+                const hours = Math.floor(timeLeft / (1000 * 60 * 60));
+                const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+                
+                document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+                document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+                document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+            }
+
+            // Update countdown every second
+            updateCountdown();
+            const countdownInterval = setInterval(updateCountdown, 1000);
+
+            // Refresh button functionality
+            refreshBtn.addEventListener('click', function() {
+                const icon = this.querySelector('i');
+                const text = this.querySelector('.btn-text');
+                
+                // Add spinning animation
+                icon.style.animation = 'spin 1s linear infinite';
+                text.textContent = 'Checking...';
+                this.disabled = true;
+                
+                // Simulate check delay
+                setTimeout(() => {
+                    location.reload();
+                }, 1000);
+            });
+
+            // Auto-refresh every 5 minutes
+            function enableAutoRefresh() {
+                if (autoRefreshEnabled) {
+                    refreshInterval = setInterval(() => {
+                        // Check if page is visible
+                        if (document.visibilityState === 'visible') {
+                            // Silent refresh check
+                            fetch(window.location.href)
+                                .then(response => response.text())
+                                .then(html => {
+                                    // If the response doesn't contain "No Challenge Available", refresh
+                                    if (!html.includes('No Challenge Available Yet')) {
+                                        location.reload();
+                                    }
+                                })
+                                .catch(() => {
+                                    // On error, just do a full refresh
+                                    location.reload();
+                                });
+                        }
+                    }, 300000); // 5 minutes
+                }
+            }
+
+            enableAutoRefresh();
+
+            // Handle page visibility changes
+            document.addEventListener('visibilitychange', function() {
+                if (document.visibilityState === 'visible') {
+                    // Page became visible, check for updates
+                    fetch(window.location.href)
+                        .then(response => response.text())
+                        .then(html => {
+                            if (!html.includes('No Challenge Available Yet')) {
+                                location.reload();
+                            }
+                        })
+                        .catch(() => {});
+                }
+            });
+
+            // Add CSS animation for spinning
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes spin {
+                    from { transform: rotate(0deg); }
+                    to { transform: rotate(360deg); }
+                }
+            `;
+            document.head.appendChild(style);
+        });
+    </script>
 {% endblock %}
