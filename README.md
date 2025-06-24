@@ -2,9 +2,7 @@
 
 KeyCrypt is a fun and challenging puzzle and messaging site. You can create puzzles for friends and other players to solve! Only then can they decrypt your message.
 
-~~Access it on [keycrypt.mlziade.com.br](https://keycrypt.mlziade.com.br)!~~
-
-**Note:** The website has been deactivated and is no longer available.
+Access it on [keycrypt.mlziade.com.br](https://keycrypt.mlziade.com.br)!
 
 ## Features
 
@@ -39,16 +37,30 @@ KeyCrypt is a fun and challenging puzzle and messaging site. You can create puzz
   <em>User profile page: View your created and solved puzzles.</em>
 </p>
 
+<p align="center">
+  <img src="docs/example4.png" alt="User profile page" width="500"><br>
+  <em>Daiy Challenge page wating page.</em>
+</p>
+
+<p align="center">
+  <img src="docs/example5.png" alt="User profile page" width="500"><br>
+  <em>Daily challenge solving page</em>
+</p>
+
 ## Roadmap
 
 *   Performance optimization via caching for high-traffic puzzles.
 *   ✅ Security enhancements including rate-limiting to prevent brute-force attempts.
 *   Direct messaging system between users.
+*   Asset compression and minification for faster load times.
+*   CDN integration for improved global content delivery.
 
-## Infrastructure
+## Deployment Infrastructure
 
-*   Deployed on an Ubuntu Linux server on a Hetzner VPS.
-*   Django backend with sqlite database
-*   Uses Gunicorn as the WSGI production server.
-*   Nginx as the reverse proxy for handling incoming calls.
-*   Ollama as the LLM model provided on the machine.
+*   **Ubuntu**: Linux server for hosting the application;
+*   **Nginx**: Web server acting as a reverse proxy;
+*   **Gunicorn**: WSGI HTTP server to run the Django application;
+*   **Systemd**: Linux initialization system used to automate application startup and manage service processes using daemons;
+*   **VPS**: Virtual private server hosting platform;
+*   **Django**: Backend framework with SQLite database;
+*   **Ollama**: LLM model provider on the machine.
