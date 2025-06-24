@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}
-    No Daily Challenge Available - {{ date|date:"F j, Y" }}
+    No Daily Puzzle Available - {{ date|date:"F j, Y" }}
 {% endblock %}
 
 {% block extra_css %}
@@ -15,7 +15,7 @@
     <div class="solve-puzzle-container no-challenge-container">
         <div class="challenge-header">
             <h2>
-                <i class="bi bi-calendar-day me-2"></i>Daily Challenge
+                <i class="bi bi-calendar-day me-2"></i>Daily Puzzle
                 <span class="puzzle-id">{{ date|date:"F j, Y" }}</span>
             </h2>
         </div>
@@ -34,14 +34,14 @@
             <div class="no-challenge-content">
                 <h3>No Challenge Available Yet</h3>
                 <p class="description">
-                    Today's puzzle is still being prepared! Our team creates fresh challenges daily with
+                    Today's puzzle is still being prepared! Our team creates fresh Daily Puzzles daily with
                     unique themes and varying difficulties. Check back soon for today's cryptographic adventure.
                 </p>
                 
                 <div class="availability-info">
                     <div class="info-item">
                         <i class="bi bi-clock-history"></i>
-                        <span>New challenges release at midnight</span>
+                        <span>New Daily Puzzles release at midnight</span>
                     </div>
                     <div class="info-item">
                         <i class="bi bi-lightning-charge"></i>
@@ -81,7 +81,7 @@
                         <span class="btn-text">Check Again</span>
                     </button>
                     <a href="{% url 'daily:list_previous_puzzles' %}" class="btn btn-outline-secondary">
-                        <i class="bi bi-archive me-2"></i>Previous Challenges
+                        <i class="bi bi-archive me-2"></i>Previous Daily Puzzles
                     </a>
                 </div>
                 

@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}
-    Previous Daily Challenges
+    Previous Daily Puzzles
 {% endblock %}
 
 {% block extra_css %}
@@ -13,7 +13,7 @@
 {% block content %}
     <div class="previous-puzzles-container">
         <h2 class="text-center mb-4">
-            Previous Daily Challenges
+            Previous Daily Puzzles
         </h2>
 
         {% load django_bootstrap5 %}
@@ -38,13 +38,13 @@
                 </div>
                 <div class="col-md-6 text-end">
                     <small class="text-muted">
-                        Showing {{ page_obj.start_index }} to {{ page_obj.end_index }} of {{ page_obj.paginator.count }} challenges
+                        Showing {{ page_obj.start_index }} to {{ page_obj.end_index }} of {{ page_obj.paginator.count }} Daily Puzzles
                     </small>
                 </div>
             </div>
         </div>
 
-        <!-- Challenges list -->
+        <!-- Daily Puzzles list -->
         <div class="challenges-grid">
             {% for item in enhanced_challenges %}
                 <div class="challenge-card">
@@ -68,7 +68,7 @@
                     
                     <div class="challenge-content">
                         <h5 class="challenge-title">
-                            {{ item.challenge.theme|default:"Daily Challenge" }}
+                            {{ item.challenge.theme|default:"Daily Puzzle" }}
                         </h5>
                         <div class="challenge-meta">
                             <span class="difficulty-badge difficulty-{{ item.challenge.difficulty }}">
@@ -104,7 +104,7 @@
                 <div class="text-center mt-5">
                     <div class="alert alert-info">
                         <i class="bi bi-info-circle me-2"></i>
-                        No previous daily challenges found.
+                        No previous Daily Puzzles found.
                     </div>
                 </div>
             {% endfor %}
@@ -112,7 +112,7 @@
 
         <!-- Pagination -->
         {% if page_obj.has_other_pages %}
-            <nav aria-label="Challenges pagination" class="mt-4">
+            <nav aria-label="Daily Puzzles pagination" class="mt-4">
                 <ul class="pagination justify-content-center">
                     {% if page_obj.has_previous %}
                         <li class="page-item">

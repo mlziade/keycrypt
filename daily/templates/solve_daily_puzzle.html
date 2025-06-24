@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}
-    Daily Challenge - {{ daily_challenge.daily_date|date:"F j, Y" }}
+    Daily Puzzle - {{ daily_challenge.daily_date|date:"F j, Y" }}
 {% endblock %}
 
 {% block extra_css %}
@@ -14,7 +14,7 @@
 {% block content %}
     <div class="solve-puzzle-container">
         <h2>
-            Daily Challenge
+            Daily Puzzle
             <span class="puzzle-id">{{ daily_challenge.daily_date|date:"F j, Y" }}</span>
         </h2>
 
@@ -80,7 +80,7 @@
             </div>
         {% else %}
             <div class="alert alert-info mt-4" role="alert">
-                This daily challenge does not have any associated questions.
+                This Daily Puzzle does not have any associated questions.
             </div>
         {% endif %}
           <div class="daily-challenge-info mt-4">
@@ -89,7 +89,7 @@
                 A new challenge is posted every day at midnight. Try to solve it before the day ends!
                 <div class="mt-2">
                     <a href="{% url 'daily:list_previous_puzzles' %}" class="btn btn-outline-primary me-2">
-                        <i class="bi bi-list-ul me-2"></i>Previous Challenges
+                        <i class="bi bi-list-ul me-2"></i>Previous Daily Puzzles
                     </a>
                     <a href="{% url 'daily:daily_leaderboard' %}" class="btn btn-outline-info">
                         <i class="bi bi-trophy me-2"></i>Leaderboard

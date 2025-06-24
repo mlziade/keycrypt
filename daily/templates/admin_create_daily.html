@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}
-    KeyCrypt - Create Daily Challenge
+    KeyCrypt - Create Daily Puzzle
 {% endblock %}
 
 {% block extra_css %}
@@ -12,7 +12,7 @@
 
 {% block content %}
     <div class="create-daily-container">
-        <h2>Create Daily Challenge</h2>
+        <h2>Create Daily Puzzle</h2>
 
         {% load django_bootstrap5 %}
         {% bootstrap_messages %}
@@ -24,7 +24,7 @@
             <div class="daily-details mb-4">
                 <h3>Challenge Details</h3>
                 
-                <!-- Daily Challenge specific fields -->
+                <!-- Daily Puzzle specific fields -->
                 {% bootstrap_field form.daily_date layout="horizontal" %}
                 {% bootstrap_field form.difficulty layout="horizontal" %}
                 {% bootstrap_field form.theme layout="horizontal" %}
@@ -82,7 +82,7 @@
                 </button>
             </div>
 
-            <button type="submit" class="btn btn-primary w-100">Create Daily Challenge</button>
+            <button type="submit" class="btn btn-primary w-100">Create Daily Puzzle</button>
         </form>
     </div>
 {% endblock %}
