@@ -1,7 +1,31 @@
 {% extends "base.html" %}
 
 {% block title %}
-    #{{ puzzle.id }}
+    View Puzzle #{{ puzzle.id }} - KeyCrypt
+{% endblock %}
+
+{% block og_title %}
+    View Puzzle #{{ puzzle.id|slice:":8" }} - KeyCrypt
+{% endblock %}
+
+{% block og_description %}
+    Check out this cryptographic puzzle on KeyCrypt! Can you solve the riddles to decrypt the hidden message? Puzzle #{{ puzzle.id|slice:":8" }} awaits your skills.
+{% endblock %}
+
+{% block og_type %}
+    article
+{% endblock %}
+
+{% block twitter_title %}
+    🧩 View Puzzle #{{ puzzle.id|slice:":8" }} - KeyCrypt
+{% endblock %}
+
+{% block twitter_description %}
+    Check out this cryptographic puzzle! Can you solve the riddles to decrypt the hidden message? 🔐 Test your skills on KeyCrypt!
+{% endblock %}
+
+{% block meta_description %}
+    View Puzzle #{{ puzzle.id|slice:":8" }} on KeyCrypt. Check out this cryptographic puzzle and see if you can solve the riddles to decrypt the hidden message.
 {% endblock %}
 
 {% block extra_css %}

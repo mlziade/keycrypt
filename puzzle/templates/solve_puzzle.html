@@ -1,7 +1,31 @@
 {% extends "base.html" %}
 
 {% block title %}
-    #{{ puzzle.id }}
+    Solve Puzzle #{{ puzzle.id }} - KeyCrypt
+{% endblock %}
+
+{% block og_title %}
+    Solve Puzzle #{{ puzzle.id|slice:":8" }} - KeyCrypt
+{% endblock %}
+
+{% block og_description %}
+    Can you crack this cryptographic puzzle? Solve the riddles to decrypt the hidden message. Challenge yourself with Puzzle #{{ puzzle.id|slice:":8" }} on KeyCrypt.
+{% endblock %}
+
+{% block og_type %}
+    article
+{% endblock %}
+
+{% block twitter_title %}
+    🧩 Solve Puzzle #{{ puzzle.id|slice:":8" }} - KeyCrypt
+{% endblock %}
+
+{% block twitter_description %}
+    Can you crack this cryptographic puzzle? Solve the riddles to decrypt the hidden message. 🔐 Challenge yourself on KeyCrypt!
+{% endblock %}
+
+{% block meta_description %}
+    Solve Puzzle #{{ puzzle.id|slice:":8" }} on KeyCrypt. Can you crack the cryptographic riddles to decrypt the hidden message? Test your puzzle-solving skills now.
 {% endblock %}
 
 {% block extra_css %}
