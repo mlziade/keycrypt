@@ -8,7 +8,7 @@
     <title>
         {% block title %}
         KeyCrypt
-        {% endblock %}  
+        {% endblock %}
     </title>    
     <!-- Open Graph Meta Tags -->
     <meta property="og:title" content="{% block og_title %}KeyCrypt - Cryptographic Puzzles{% endblock %}">
@@ -24,7 +24,7 @@
     <meta name="twitter:card" content="{% block twitter_card %}summary_large_image{% endblock %}">
     <meta name="twitter:title" content="{% block twitter_title %}KeyCrypt - Cryptographic Puzzles{% endblock %}">
     <meta name="twitter:description" content="{% block twitter_description %}Solve cryptographic puzzles and challenge your mind with KeyCrypt. Test your skills with encrypted messages and riddles.{% endblock %}">
-    <meta name="twitter:image" content="{% block twitter_image %}{% load static %}{{ request.scheme }}://{{ request.get_host }}{% static 'keycrypt-social-card.png' %}{% endblock %}">>
+    <meta name="twitter:image" content="{% block twitter_image %}{% load static %}{{ request.scheme }}://{{ request.get_host }}{% static 'keycrypt-social-card.png' %}{% endblock %}">
 
     <!-- Additional Meta Tags -->
     <meta name="description" content="{% block meta_description %}Solve cryptographic puzzles and challenge your mind with KeyCrypt. Test your skills with encrypted messages and riddles.{% endblock %}">
